@@ -76,7 +76,11 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="hero" className="w-full">
+              <Button 
+                variant="hero" 
+                className="w-full"
+                onClick={() => window.location.href = '/campaigns'}
+              >
                 Start New Campaign
               </Button>
             </CardContent>
@@ -93,7 +97,11 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => window.location.href = '/twilio-setup'}
+              >
                 Connect Twilio
               </Button>
             </CardContent>
