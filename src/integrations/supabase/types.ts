@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_performance: {
+        Row: {
+          agent_id: string | null
+          average_call_duration: unknown | null
+          conversion_rate: number | null
+          cost_per_lead_cents: number | null
+          created_at: string | null
+          date: string
+          id: string
+          quality_score: number | null
+          revenue_generated_cents: number | null
+          successful_calls: number | null
+          total_calls: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          average_call_duration?: unknown | null
+          conversion_rate?: number | null
+          cost_per_lead_cents?: number | null
+          created_at?: string | null
+          date: string
+          id?: string
+          quality_score?: number | null
+          revenue_generated_cents?: number | null
+          successful_calls?: number | null
+          total_calls?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          average_call_duration?: unknown | null
+          conversion_rate?: number | null
+          cost_per_lead_cents?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          quality_score?: number | null
+          revenue_generated_cents?: number | null
+          successful_calls?: number | null
+          total_calls?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_performance_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_agents: {
         Row: {
           avg_call_duration: string | null
@@ -82,6 +138,65 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      call_quality_scores: {
+        Row: {
+          call_record_id: string | null
+          compliance_score: number | null
+          created_at: string | null
+          engagement_score: number | null
+          feedback_notes: string | null
+          id: string
+          overall_score: number | null
+          quality_flags: Json | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          script_adherence_score: number | null
+          tone_score: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          call_record_id?: string | null
+          compliance_score?: number | null
+          created_at?: string | null
+          engagement_score?: number | null
+          feedback_notes?: string | null
+          id?: string
+          overall_score?: number | null
+          quality_flags?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          script_adherence_score?: number | null
+          tone_score?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          call_record_id?: string | null
+          compliance_score?: number | null
+          created_at?: string | null
+          engagement_score?: number | null
+          feedback_notes?: string | null
+          id?: string
+          overall_score?: number | null
+          quality_flags?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          script_adherence_score?: number | null
+          tone_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_quality_scores_call_record_id_fkey"
+            columns: ["call_record_id"]
+            isOneToOne: false
+            referencedRelation: "call_records"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -172,6 +287,74 @@ export type Database = {
             columns: ["contact_id"]
             isOneToOne: false
             referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaign_analytics: {
+        Row: {
+          appointments_booked: number | null
+          calls_attempted: number | null
+          calls_completed: number | null
+          calls_connected: number | null
+          campaign_id: string | null
+          cold_leads: number | null
+          conversion_rate: number | null
+          cost_total_cents: number | null
+          created_at: string | null
+          date: string
+          hot_leads: number | null
+          id: string
+          sales_closed: number | null
+          total_talk_time: unknown | null
+          updated_at: string | null
+          user_id: string
+          warm_leads: number | null
+        }
+        Insert: {
+          appointments_booked?: number | null
+          calls_attempted?: number | null
+          calls_completed?: number | null
+          calls_connected?: number | null
+          campaign_id?: string | null
+          cold_leads?: number | null
+          conversion_rate?: number | null
+          cost_total_cents?: number | null
+          created_at?: string | null
+          date: string
+          hot_leads?: number | null
+          id?: string
+          sales_closed?: number | null
+          total_talk_time?: unknown | null
+          updated_at?: string | null
+          user_id: string
+          warm_leads?: number | null
+        }
+        Update: {
+          appointments_booked?: number | null
+          calls_attempted?: number | null
+          calls_completed?: number | null
+          calls_connected?: number | null
+          campaign_id?: string | null
+          cold_leads?: number | null
+          conversion_rate?: number | null
+          cost_total_cents?: number | null
+          created_at?: string | null
+          date?: string
+          hot_leads?: number | null
+          id?: string
+          sales_closed?: number | null
+          total_talk_time?: unknown | null
+          updated_at?: string | null
+          user_id?: string
+          warm_leads?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_analytics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
         ]
