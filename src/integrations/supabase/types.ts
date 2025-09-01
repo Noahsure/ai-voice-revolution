@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone_number: string | null
+          plan_type: string | null
+          subscription_status: string | null
+          trial_ends_at: string | null
+          twilio_account_sid: string | null
+          twilio_auth_token: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone_number?: string | null
+          plan_type?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          twilio_account_sid?: string | null
+          twilio_auth_token?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone_number?: string | null
+          plan_type?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          twilio_account_sid?: string | null
+          twilio_auth_token?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

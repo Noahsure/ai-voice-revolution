@@ -41,10 +41,10 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => window.location.href = '/auth'}>
               Sign In
             </Button>
-            <Button variant="hero" className="group">
+            <Button variant="hero" className="group" onClick={() => window.location.href = '/auth'}>
               <Zap className="w-4 h-4" />
               Start Free Trial
             </Button>
@@ -79,10 +79,10 @@ export const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
-                <Button variant="ghost" className="justify-start">
+                <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/auth'}>
                   Sign In
                 </Button>
-                <Button variant="hero">
+                <Button variant="hero" onClick={() => window.location.href = '/auth'}>
                   <Zap className="w-4 h-4" />
                   Start Free Trial
                 </Button>
