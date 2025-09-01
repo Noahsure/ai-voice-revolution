@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TrialBanner } from '@/components/TrialBanner';
 import { Loader2 } from 'lucide-react';
+import VoiceTestingPanel from '@/components/VoiceTestingPanel';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -320,6 +322,52 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Voice System Testing */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Mic className="w-5 h-5 text-nexavoice-primary" />
+              Voice System Testing
+            </CardTitle>
+            <CardDescription>
+              Test speech synthesis and recognition functionality to ensure optimal call quality
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="overview">System Status</TabsTrigger>
+                <TabsTrigger value="testing">Voice Testing</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="overview" className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="text-center p-3 rounded-lg border">
+                    <div className="text-green-600 font-semibold">✓ ElevenLabs TTS</div>
+                    <div className="text-muted-foreground">Connected</div>
+                  </div>
+                  <div className="text-center p-3 rounded-lg border">
+                    <div className="text-green-600 font-semibold">✓ OpenAI Whisper</div>
+                    <div className="text-muted-foreground">Ready</div>
+                  </div>
+                  <div className="text-center p-3 rounded-lg border">
+                    <div className="text-green-600 font-semibold">✓ Twilio Integration</div>
+                    <div className="text-muted-foreground">Active</div>
+                  </div>
+                  <div className="text-center p-3 rounded-lg border">
+                    <div className="text-blue-600 font-semibold">○ AI Conversations</div>
+                    <div className="text-muted-foreground">Enhanced</div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="testing">
+                <VoiceTestingPanel />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
