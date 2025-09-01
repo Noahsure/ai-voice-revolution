@@ -488,6 +488,39 @@ export type Database = {
           },
         ]
       }
+      plan_limits: {
+        Row: {
+          features: Json | null
+          max_agents: number
+          max_call_minutes: number
+          max_campaigns: number
+          max_contacts: number
+          plan_type: string
+          price_monthly_gbp: number
+          price_yearly_gbp: number
+        }
+        Insert: {
+          features?: Json | null
+          max_agents: number
+          max_call_minutes: number
+          max_campaigns: number
+          max_contacts: number
+          plan_type: string
+          price_monthly_gbp: number
+          price_yearly_gbp: number
+        }
+        Update: {
+          features?: Json | null
+          max_agents?: number
+          max_call_minutes?: number
+          max_campaigns?: number
+          max_contacts?: number
+          plan_type?: string
+          price_monthly_gbp?: number
+          price_yearly_gbp?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           company_name: string | null
@@ -532,6 +565,103 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan_type: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_end: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      usage_tracking: {
+        Row: {
+          agents_created: number | null
+          call_minutes_used: number | null
+          campaigns_active: number | null
+          contacts_uploaded: number | null
+          created_at: string | null
+          id: string
+          month_year: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agents_created?: number | null
+          call_minutes_used?: number | null
+          campaigns_active?: number | null
+          contacts_uploaded?: number | null
+          created_at?: string | null
+          id?: string
+          month_year: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agents_created?: number | null
+          call_minutes_used?: number | null
+          campaigns_active?: number | null
+          contacts_uploaded?: number | null
+          created_at?: string | null
+          id?: string
+          month_year?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_tracking_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {

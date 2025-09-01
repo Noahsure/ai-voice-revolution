@@ -1,12 +1,26 @@
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { TrialBanner } from '@/components/TrialBanner';
+import { Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const { subscription, usage, limits, usagePercentages, loading } = useSubscription();
   const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-nexavoice-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -18,6 +32,14 @@ const Dashboard = () => {
             <span className="text-2xl font-black nexavoice-text-gradient">NEXAVOICE</span>
           </div>
           <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/billing')}
+              className="gap-2"
+            >
+              <CreditCard className="w-4 h-4" />
+              Billing
+            </Button>
             <span className="text-sm text-muted-foreground">
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </span>
@@ -29,12 +51,27 @@ const Dashboard = () => {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Trial Banner */}
+        <TrialBanner />
+
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">AI Voice Calling Dashboard</h1>
           <p className="text-muted-foreground text-lg">
             Launch your first campaign in under 3 minutes
           </p>
+          {subscription && (
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant={subscription.plan_type === 'trial' ? 'outline' : 'default'}>
+                {subscription.plan_type === 'trial' ? 'Free Trial' : `${subscription.plan_type.charAt(0).toUpperCase() + subscription.plan_type.slice(1)} Plan`}
+              </Badge>
+              {subscription.plan_type === 'trial' && (
+                <span className="text-sm text-muted-foreground">
+                  {subscription.days_left} days remaining
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Quick Stats */}
@@ -42,28 +79,85 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardDescription>Active Campaigns</CardDescription>
-              <CardTitle className="text-3xl nexavoice-text-gradient">0</CardTitle>
+              <CardTitle className="text-3xl nexavoice-text-gradient">
+                {usage?.campaigns || 0}
+              </CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Calls Today</CardDescription>
-              <CardTitle className="text-3xl nexavoice-text-gradient">0</CardTitle>
+              <CardDescription>Call Minutes Used</CardDescription>
+              <CardTitle className="text-3xl nexavoice-text-gradient">
+                {usage?.call_minutes || 0}
+              </CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Hot Leads</CardDescription>
-              <CardTitle className="text-3xl nexavoice-text-gradient">0</CardTitle>
+              <CardDescription>AI Agents</CardDescription>
+              <CardTitle className="text-3xl nexavoice-text-gradient">
+                {usage?.agents || 0}
+              </CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardDescription>Trial Days Left</CardDescription>
-              <CardTitle className="text-3xl nexavoice-text-gradient">7</CardTitle>
+              <CardDescription>
+                {subscription?.plan_type === 'trial' ? 'Trial Days Left' : 'Contacts'}
+              </CardDescription>
+              <CardTitle className="text-3xl nexavoice-text-gradient">
+                {subscription?.plan_type === 'trial' ? subscription.days_left : (usage?.contacts || 0)}
+              </CardTitle>
             </CardHeader>
           </Card>
         </div>
+
+        {/* Usage Overview */}
+        {usage && limits && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Usage Overview</CardTitle>
+              <CardDescription>Monitor your current usage across all features</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { key: 'call_minutes', label: 'Call Minutes', current: usage.call_minutes, limit: limits.max_call_minutes },
+                  { key: 'agents', label: 'AI Agents', current: usage.agents, limit: limits.max_agents },
+                  { key: 'campaigns', label: 'Campaigns', current: usage.campaigns, limit: limits.max_campaigns },
+                  { key: 'contacts', label: 'Contacts', current: usage.contacts, limit: limits.max_contacts }
+                ].map(({ key, label, current, limit }) => {
+                  const percentage = usagePercentages[key] || 0;
+                  const isWarning = percentage >= 80;
+                  const isExceeded = percentage >= 100;
+                  
+                  return (
+                    <div key={key} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{label}</span>
+                        {isExceeded && <AlertTriangle className="w-4 h-4 text-red-400" />}
+                        {isWarning && !isExceeded && <AlertTriangle className="w-4 h-4 text-yellow-400" />}
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>{current.toLocaleString()}</span>
+                          <span className="text-gray-400">/ {limit.toLocaleString()}</span>
+                        </div>
+                        <Progress 
+                          value={Math.min(percentage, 100)} 
+                          className={`h-2 ${isExceeded ? 'bg-red-900' : isWarning ? 'bg-yellow-900' : 'bg-gray-700'}`}
+                        />
+                        <p className="text-xs text-gray-400">
+                          {percentage.toFixed(1)}% used
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -174,7 +268,11 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => navigate('/analytics')}
+              >
                 View Analytics
               </Button>
             </CardContent>
@@ -191,7 +289,11 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => navigate('/live-monitoring')}
+              >
                 Monitor Calls
               </Button>
             </CardContent>
@@ -200,16 +302,20 @@ const Dashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-nexavoice-secondary" />
-                Team Management
+                <CreditCard className="w-5 h-5 text-nexavoice-secondary" />
+                Billing & Usage
               </CardTitle>
               <CardDescription>
-                Manage your team and assign campaigns
+                Manage subscription and view usage details
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Team
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => navigate('/billing')}
+              >
+                Manage Billing
               </Button>
             </CardContent>
           </Card>
