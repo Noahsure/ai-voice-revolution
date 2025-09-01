@@ -85,6 +85,97 @@ export type Database = {
           },
         ]
       }
+      call_records: {
+        Row: {
+          agent_id: string | null
+          ai_summary: string | null
+          call_direction: string | null
+          call_outcome: string | null
+          call_status: string | null
+          campaign_id: string | null
+          contact_id: string | null
+          cost_cents: number | null
+          created_at: string
+          duration_seconds: number | null
+          end_time: string | null
+          id: string
+          phone_number: string
+          recording_url: string | null
+          sentiment_score: number | null
+          start_time: string | null
+          transcript: string | null
+          twilio_call_sid: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          ai_summary?: string | null
+          call_direction?: string | null
+          call_outcome?: string | null
+          call_status?: string | null
+          campaign_id?: string | null
+          contact_id?: string | null
+          cost_cents?: number | null
+          created_at?: string
+          duration_seconds?: number | null
+          end_time?: string | null
+          id?: string
+          phone_number: string
+          recording_url?: string | null
+          sentiment_score?: number | null
+          start_time?: string | null
+          transcript?: string | null
+          twilio_call_sid?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          ai_summary?: string | null
+          call_direction?: string | null
+          call_outcome?: string | null
+          call_status?: string | null
+          campaign_id?: string | null
+          contact_id?: string | null
+          cost_cents?: number | null
+          created_at?: string
+          duration_seconds?: number | null
+          end_time?: string | null
+          id?: string
+          phone_number?: string
+          recording_url?: string | null
+          sentiment_score?: number | null
+          start_time?: string | null
+          transcript?: string | null
+          twilio_call_sid?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_records_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_records_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_records_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           agent_id: string | null
