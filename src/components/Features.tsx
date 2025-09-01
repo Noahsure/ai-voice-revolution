@@ -56,7 +56,7 @@ export const Features = () => {
     <section id="features" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-nexavoice-primary/10 px-4 py-2 rounded-full text-nexavoice-primary text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 bg-gradient-luxury/20 px-6 py-3 rounded-full text-luxury-gold text-sm font-semibold mb-6 shadow-luxury">
             <Sparkles className="w-4 h-4" />
             Revolutionary Features
           </div>
@@ -75,12 +75,12 @@ export const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group p-6 rounded-2xl bg-gradient-card border border-border/50 hover:border-nexavoice-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="group p-8 rounded-2xl bg-gradient-card border border-border/50 hover:border-luxury-gold/50 transition-all duration-500 hover:scale-105 hover:shadow-luxury backdrop-blur-sm"
             >
-              <div className={`inline-flex p-3 rounded-xl bg-background/50 ${feature.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                <feature.icon className="w-6 h-6" />
+              <div className={`inline-flex p-4 rounded-xl bg-gradient-platinum shadow-platinum ${feature.color} mb-6 group-hover:scale-110 group-hover:shadow-luxury transition-all duration-500`}>
+                <feature.icon className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-semibold mb-3 group-hover:text-nexavoice-primary transition-colors">
+              <h3 className="text-xl font-bold mb-4 group-hover:text-luxury-gold transition-colors duration-300">
                 {feature.title}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">

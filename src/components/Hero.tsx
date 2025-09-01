@@ -13,16 +13,17 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/80 to-background/95" />
       </div>
       
-      {/* Floating elements */}
-      <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-nexavoice-primary/20 rounded-full blur-xl nexavoice-animate-float" />
-      <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-nexavoice-secondary/20 rounded-full blur-xl nexavoice-animate-float" style={{ animationDelay: '-2s' }} />
-      <div className="absolute top-1/2 right-1/6 w-12 h-12 bg-nexavoice-accent/20 rounded-full blur-xl nexavoice-animate-float" style={{ animationDelay: '-4s' }} />
+      {/* Premium Floating Elements */}
+      <div className="absolute top-1/4 left-1/4 w-20 h-20 bg-nexavoice-primary/30 rounded-full blur-2xl nexavoice-premium-float shadow-glow-intense" />
+      <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-luxury-gold/40 rounded-full blur-3xl nexavoice-premium-float shadow-luxury" style={{ animationDelay: '-2s' }} />
+      <div className="absolute top-1/2 right-1/6 w-16 h-16 bg-platinum/50 rounded-full blur-2xl nexavoice-premium-float shadow-platinum" style={{ animationDelay: '-4s' }} />
+      <div className="absolute top-3/4 left-1/6 w-12 h-12 bg-nexavoice-secondary/40 rounded-full blur-xl nexavoice-premium-float" style={{ animationDelay: '-6s' }} />
       
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 text-center">
         <div className="max-w-6xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-gradient-hero px-6 py-2 rounded-full text-white text-sm font-medium mb-8 nexavoice-glow">
+          {/* Premium Badge */}
+          <div className="inline-flex items-center gap-2 bg-gradient-luxury px-8 py-3 rounded-full text-white text-sm font-semibold mb-8 shadow-luxury nexavoice-luxury-shimmer">
             <Zap className="w-4 h-4" />
             Revolutionizing Call Centers Globally
           </div>
@@ -62,13 +63,13 @@ export const Hero = () => {
             </div>
           </div>
           
-          {/* CTA Buttons */}
+          {/* Premium CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button variant="hero" size="xl" className="group" onClick={() => window.location.href = '/auth'}>
+            <Button variant="luxury" size="xl" className="group" onClick={() => window.location.href = '/auth'}>
               Start Free 7-Day Trial
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="glass" size="xl" className="group">
+            <Button variant="glass" size="xl" className="group hover:shadow-platinum">
               <Play className="w-5 h-5" />
               Watch Demo (2 min)
             </Button>

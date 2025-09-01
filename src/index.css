@@ -8,13 +8,22 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors */
+    /* Premium Luxury Brand Colors */
     --nexavoice-primary: 240 100% 50%; /* Electric Blue */
     --nexavoice-primary-light: 240 100% 60%;
     --nexavoice-primary-dark: 240 100% 40%;
     
     --nexavoice-secondary: 280 100% 60%; /* Electric Purple */
     --nexavoice-accent: 45 100% 55%; /* Electric Gold */
+    
+    /* Luxury Accents */
+    --platinum: 220 10% 85%; /* Platinum Silver */
+    --platinum-light: 220 15% 90%;
+    --platinum-dark: 220 8% 70%;
+    
+    --luxury-gold: 42 100% 70%; /* Rich Gold */
+    --luxury-gold-light: 42 100% 75%;
+    --luxury-gold-dark: 42 100% 65%;
     
     /* Base System */
     --background: 0 0% 100%;
@@ -55,18 +64,26 @@
     --input: 220 15% 91%;
     --ring: 240 100% 50%;
     
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(240 100% 50%), hsl(280 100% 60%));
-    --gradient-card: linear-gradient(135deg, hsl(220 20% 98%), hsl(220 15% 96%));
-    --gradient-accent: linear-gradient(135deg, hsl(45 100% 55%), hsl(35 100% 50%));
-    --gradient-subtle: linear-gradient(180deg, hsl(220 20% 98%), hsl(220 15% 96%));
+    /* Premium Luxury Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(240 100% 50%) 0%, hsl(280 100% 60%) 50%, hsl(42 100% 70%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(220 10% 85%) 0%, hsl(240 100% 50%) 50%, hsl(280 100% 60%) 100%);
+    --gradient-luxury: linear-gradient(135deg, hsl(42 100% 70%) 0%, hsl(45 100% 55%) 50%, hsl(280 100% 60%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(220 20% 98%) 0%, hsl(220 15% 96%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(45 100% 55%) 0%, hsl(35 100% 50%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 20% 98%) 0%, hsl(220 15% 96%) 100%);
+    --gradient-platinum: linear-gradient(135deg, hsl(220 15% 90%) 0%, hsl(220 10% 85%) 100%);
     
-    /* Shadows */
+    /* Premium Luxury Shadows */
     --shadow-sm: 0 1px 2px hsl(220 15% 10% / 0.05);
     --shadow-md: 0 4px 6px hsl(220 15% 10% / 0.07), 0 2px 4px hsl(220 15% 10% / 0.06);
     --shadow-lg: 0 10px 15px hsl(220 15% 10% / 0.1), 0 4px 6px hsl(220 15% 10% / 0.05);
     --shadow-xl: 0 20px 25px hsl(220 15% 10% / 0.1), 0 8px 10px hsl(220 15% 10% / 0.04);
+    --shadow-2xl: 0 30px 40px hsl(220 15% 10% / 0.15), 0 12px 20px hsl(220 15% 10% / 0.08);
+    
     --shadow-glow: 0 0 0 1px hsl(240 100% 50% / 0.05), 0 0 50px hsl(240 100% 50% / 0.3);
+    --shadow-glow-intense: 0 0 0 1px hsl(240 100% 50% / 0.1), 0 0 80px hsl(240 100% 50% / 0.4), 0 0 120px hsl(280 100% 60% / 0.2);
+    --shadow-luxury: 0 20px 40px hsl(42 100% 70% / 0.2), 0 8px 16px hsl(42 100% 70% / 0.1);
+    --shadow-platinum: 0 10px 30px hsl(220 10% 85% / 0.3), 0 4px 12px hsl(220 10% 85% / 0.2);
     
     /* Animations */
     --animation-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -162,6 +179,19 @@
     animation: pulse-glow 2s ease-in-out infinite;
   }
   
+  .nexavoice-luxury-shimmer {
+    background: linear-gradient(90deg, 
+      hsl(220 10% 85% / 0.3) 0%, 
+      hsl(42 100% 70% / 0.8) 50%, 
+      hsl(220 10% 85% / 0.3) 100%);
+    background-size: 200% 100%;
+    animation: luxury-shimmer 3s ease-in-out infinite;
+  }
+  
+  .nexavoice-premium-float {
+    animation: premium-float 8s ease-in-out infinite;
+  }
+  
   .nexavoice-text-gradient {
     background: var(--gradient-hero);
     -webkit-background-clip: text;
@@ -185,6 +215,27 @@
   }
   50% {
     box-shadow: 0 0 40px hsl(240 100% 50% / 0.6), 0 0 80px hsl(240 100% 50% / 0.3);
+  }
+}
+
+@keyframes luxury-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes premium-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-12px) rotate(-1deg);
   }
 }
 

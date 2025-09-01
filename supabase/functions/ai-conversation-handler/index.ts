@@ -67,7 +67,7 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get agent configuration
+    // Get agent configuration and ensure proper sync
     const { data: agent } = await supabase
       .from('ai_agents')
       .select('*')
@@ -75,8 +75,11 @@ serve(async (req) => {
       .single();
 
     if (!agent) {
+      console.error(`Agent not found for ID: ${agentId}`);
       throw new Error('Agent not found');
     }
+
+    console.log(`✅ Agent ${agent.name} (${agent.id}) successfully synced to call ${callRecordId}`);
 
     // Get call record and contact information
     const { data: callRecord } = await supabase

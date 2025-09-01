@@ -63,7 +63,7 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
-				// NEXAVOICE Brand Colors
+				// NEXAVOICE Premium Brand Colors
 				nexavoice: {
 					primary: 'hsl(var(--nexavoice-primary))',
 					'primary-light': 'hsl(var(--nexavoice-primary-light))',
@@ -71,18 +71,35 @@ export default {
 					secondary: 'hsl(var(--nexavoice-secondary))',
 					accent: 'hsl(var(--nexavoice-accent))'
 				},
+				platinum: {
+					DEFAULT: 'hsl(var(--platinum))',
+					light: 'hsl(var(--platinum-light))',
+					dark: 'hsl(var(--platinum-dark))'
+				},
+				luxury: {
+					gold: 'hsl(var(--luxury-gold))',
+					'gold-light': 'hsl(var(--luxury-gold-light))',
+					'gold-dark': 'hsl(var(--luxury-gold-dark))'
+				},
 			},
 			backgroundImage: {
 				'gradient-hero': 'var(--gradient-hero)',
-				'gradient-card': 'var(--gradient-card)',
+				'gradient-premium': 'var(--gradient-premium)',
+				'gradient-luxury': 'var(--gradient-luxury)',
+				'gradient-card': 'var(--gradient-card)', 
 				'gradient-accent': 'var(--gradient-accent)',
+				'gradient-platinum': 'var(--gradient-platinum)',
 			},
 			boxShadow: {
 				'sm': 'var(--shadow-sm)',
 				'md': 'var(--shadow-md)',
 				'lg': 'var(--shadow-lg)',
 				'xl': 'var(--shadow-xl)',
+				'2xl': 'var(--shadow-2xl)',
 				'glow': 'var(--shadow-glow)',
+				'glow-intense': 'var(--shadow-glow-intense)',
+				'luxury': 'var(--shadow-luxury)',
+				'platinum': 'var(--shadow-platinum)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -127,7 +144,9 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
-				'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'luxury-shimmer': 'luxury-shimmer 3s ease-in-out infinite',
+				'premium-float': 'premium-float 8s ease-in-out infinite'
 			}
 		}
 	},
