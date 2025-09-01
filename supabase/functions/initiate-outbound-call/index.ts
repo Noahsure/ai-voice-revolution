@@ -14,6 +14,78 @@ interface CallRequest {
   phoneNumber: string;
 }
 
+const CALL_TIMEOUT_MS = 60000; // 60 seconds max for call initiation
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 2000; // 2 seconds between retries
+
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function checkForStuckCalls(supabase: any, userId: string) {
+  // Find calls stuck in 'initiated' state for more than 5 minutes
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  
+  const { error } = await supabase
+    .from('call_records')
+    .update({ call_status: 'failed' })
+    .eq('user_id', userId)
+    .eq('call_status', 'initiated')
+    .lt('created_at', fiveMinutesAgo);
+
+  if (error) {
+    console.error('Error cleaning stuck calls:', error);
+  }
+}
+
+async function initiateTwilioCallWithRetry(
+  twilioUrl: string,
+  twilioAuth: string,
+  callParams: URLSearchParams,
+  maxRetries: number = MAX_RETRIES
+): Promise<any> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Twilio call attempt ${attempt}/${maxRetries}`);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), CALL_TIMEOUT_MS);
+
+      const twilioResponse = await fetch(twilioUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${twilioAuth}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: callParams,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!twilioResponse.ok) {
+        const errorText = await twilioResponse.text();
+        throw new Error(`Twilio API error (${twilioResponse.status}): ${errorText}`);
+      }
+
+      return await twilioResponse.json();
+    } catch (error) {
+      lastError = error as Error;
+      console.error(`Twilio call attempt ${attempt} failed:`, error);
+      
+      if (attempt < maxRetries) {
+        const delay = RETRY_DELAY_MS * attempt; // Exponential backoff
+        console.log(`Retrying in ${delay}ms...`);
+        await sleep(delay);
+      }
+    }
+  }
+
+  throw lastError || new Error('All Twilio call attempts failed');
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -22,6 +94,11 @@ serve(async (req) => {
 
   try {
     const { campaignId, contactId, agentId, phoneNumber }: CallRequest = await req.json();
+
+    // Input validation
+    if (!campaignId || !contactId || !agentId || !phoneNumber) {
+      throw new Error('Missing required parameters');
+    }
 
     // Initialize Supabase client
     const supabaseUrl = "https://xmpjqtvznswcdfwtrvpc.supabase.co";
@@ -42,6 +119,9 @@ serve(async (req) => {
     if (!user) {
       throw new Error('Unauthorized');
     }
+
+    // Clean up any stuck calls for this user
+    await checkForStuckCalls(supabase, user.id);
 
     // Get agent details for voice configuration
     const { data: agent } = await supabase
@@ -84,7 +164,7 @@ serve(async (req) => {
     const twimlUrl = `https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/ai-conversation-handler?callRecordId=${callRecord.id}&agentId=${agentId}`;
     const statusCallbackUrl = `https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/handle-call-webhook`;
 
-    // Initiate Twilio call
+    // Initiate Twilio call with retry logic
     const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Calls.json`;
     const twilioAuth = btoa(`${twilioAccountSid}:${twilioAuthToken}`);
 
@@ -99,21 +179,18 @@ serve(async (req) => {
       Timeout: '30'
     });
 
-    const twilioResponse = await fetch(twilioUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${twilioAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: callParams
-    });
-
-    if (!twilioResponse.ok) {
-      const error = await twilioResponse.text();
-      throw new Error(`Twilio API error: ${error}`);
+    let callData;
+    try {
+      callData = await initiateTwilioCallWithRetry(twilioUrl, twilioAuth, callParams);
+    } catch (error) {
+      // Mark call as failed in database
+      await supabase
+        .from('call_records')
+        .update({ call_status: 'failed' })
+        .eq('id', callRecord.id);
+      
+      throw error;
     }
-
-    const callData = await twilioResponse.json();
 
     // Update call record with Twilio SID
     await supabase
@@ -135,7 +212,7 @@ serve(async (req) => {
       })
       .eq('id', contactId);
 
-    console.log(`Call initiated: ${callData.sid} to ${phoneNumber}`);
+    console.log(`Call initiated successfully: ${callData.sid} to ${phoneNumber}`);
 
     return new Response(JSON.stringify({
       success: true,
