@@ -13,6 +13,7 @@ import Campaigns from "./pages/Campaigns";
 import Agents from "./pages/Agents";
 import Contacts from "./pages/Contacts";
 import LiveMonitoring from "./pages/LiveMonitoring";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <LiveMonitoring />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/analytics" 
+              element={
+                <ProtectedRoute>
+                  <Analytics />
                 </ProtectedRoute>
               } 
             />
