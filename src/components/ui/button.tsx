@@ -16,15 +16,15 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         
-        // NEXAVOICE Premium Variants
-        hero: "bg-gradient-hero text-white font-semibold hover:scale-105 hover:shadow-glow-intense transform transition-all duration-500 shadow-luxury",
-        nexavoice: "bg-nexavoice-primary text-white font-medium hover:bg-nexavoice-primary-light hover:scale-105 hover:shadow-glow transform transition-all duration-300",
-        premium: "bg-gradient-premium text-white font-semibold hover:scale-105 hover:shadow-platinum transform transition-all duration-500 shadow-xl",
-        luxury: "bg-gradient-luxury text-white font-bold hover:scale-110 hover:shadow-luxury transform transition-all duration-500 shadow-2xl nexavoice-luxury-shimmer",
-        accent: "bg-nexavoice-accent text-foreground font-medium hover:bg-nexavoice-accent/90 hover:scale-105 transform transition-all duration-300",
-        glass: "nexavoice-glass text-white backdrop-blur-xl hover:bg-white/10 border-white/20 shadow-platinum",
-        glow: "bg-gradient-hero text-white font-semibold animate-pulse-glow hover:scale-105 transform transition-all duration-300",
-        platinum: "bg-gradient-platinum text-foreground font-semibold hover:scale-105 hover:shadow-platinum transform transition-all duration-300 border border-platinum/30",
+        // NEXAVOICE Sophisticated Variants
+        hero: "bg-gradient-hero text-white font-semibold hover:scale-[1.02] hover:shadow-glow transition-all duration-300 shadow-lg",
+        nexavoice: "bg-nexavoice-primary text-white font-medium hover:bg-nexavoice-primary-light hover:scale-[1.02] hover:shadow-glow transition-all duration-300",
+        premium: "bg-gradient-premium text-nexavoice-primary font-semibold hover:scale-[1.02] hover:shadow-platinum transition-all duration-300 shadow-md border border-platinum/20",
+        luxury: "bg-gradient-luxury text-white font-semibold hover:scale-[1.02] hover:shadow-luxury transition-all duration-300 shadow-lg",
+        accent: "bg-nexavoice-accent text-white font-medium hover:bg-nexavoice-accent/90 hover:scale-[1.02] transition-all duration-300",
+        glass: "bg-white/5 backdrop-blur-xl text-white hover:bg-white/10 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300",
+        glow: "bg-gradient-hero text-white font-semibold animate-pulse-glow hover:scale-[1.02] transition-all duration-300",
+        platinum: "bg-gradient-platinum text-nexavoice-primary font-semibold hover:scale-[1.02] hover:shadow-platinum transition-all duration-300 border border-platinum/30",
       },
       size: {
         default: "h-12 px-6 py-3",

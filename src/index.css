@@ -8,22 +8,22 @@
 
 @layer base {
   :root {
-    /* Premium Luxury Brand Colors */
-    --nexavoice-primary: 240 100% 50%; /* Electric Blue */
-    --nexavoice-primary-light: 240 100% 60%;
-    --nexavoice-primary-dark: 240 100% 40%;
+    /* Sophisticated Luxury Palette */
+    --nexavoice-primary: 220 20% 15%; /* Deep Charcoal */
+    --nexavoice-primary-light: 220 15% 25%;
+    --nexavoice-primary-dark: 220 25% 8%;
     
-    --nexavoice-secondary: 280 100% 60%; /* Electric Purple */
-    --nexavoice-accent: 45 100% 55%; /* Electric Gold */
+    --nexavoice-secondary: 220 10% 50%; /* Refined Gray */
+    --nexavoice-accent: 45 25% 60%; /* Muted Gold */
     
-    /* Luxury Accents */
-    --platinum: 220 10% 85%; /* Platinum Silver */
-    --platinum-light: 220 15% 90%;
-    --platinum-dark: 220 8% 70%;
+    /* Elegant Neutrals */
+    --platinum: 220 8% 92%; /* Sophisticated Silver */
+    --platinum-light: 220 10% 96%;
+    --platinum-dark: 220 6% 85%;
     
-    --luxury-gold: 42 100% 70%; /* Rich Gold */
-    --luxury-gold-light: 42 100% 75%;
-    --luxury-gold-dark: 42 100% 65%;
+    --luxury-gold: 45 35% 65%; /* Understated Gold */
+    --luxury-gold-light: 45 40% 70%;
+    --luxury-gold-dark: 45 30% 55%;
     
     /* Base System */
     --background: 0 0% 100%;
@@ -64,26 +64,26 @@
     --input: 220 15% 91%;
     --ring: 240 100% 50%;
     
-    /* Premium Luxury Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(240 100% 50%) 0%, hsl(280 100% 60%) 50%, hsl(42 100% 70%) 100%);
-    --gradient-premium: linear-gradient(135deg, hsl(220 10% 85%) 0%, hsl(240 100% 50%) 50%, hsl(280 100% 60%) 100%);
-    --gradient-luxury: linear-gradient(135deg, hsl(42 100% 70%) 0%, hsl(45 100% 55%) 50%, hsl(280 100% 60%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(220 20% 98%) 0%, hsl(220 15% 96%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(45 100% 55%) 0%, hsl(35 100% 50%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(220 20% 98%) 0%, hsl(220 15% 96%) 100%);
-    --gradient-platinum: linear-gradient(135deg, hsl(220 15% 90%) 0%, hsl(220 10% 85%) 100%);
+    /* Refined Luxury Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 20% 15%) 0%, hsl(220 15% 25%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(220 8% 92%) 0%, hsl(220 6% 85%) 100%);
+    --gradient-luxury: linear-gradient(135deg, hsl(45 35% 65%) 0%, hsl(45 30% 55%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 8% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(45 25% 60%) 0%, hsl(45 20% 50%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 8% 98%) 0%, hsl(220 6% 95%) 100%);
+    --gradient-platinum: linear-gradient(135deg, hsl(220 10% 96%) 0%, hsl(220 8% 92%) 100%);
     
-    /* Premium Luxury Shadows */
-    --shadow-sm: 0 1px 2px hsl(220 15% 10% / 0.05);
-    --shadow-md: 0 4px 6px hsl(220 15% 10% / 0.07), 0 2px 4px hsl(220 15% 10% / 0.06);
-    --shadow-lg: 0 10px 15px hsl(220 15% 10% / 0.1), 0 4px 6px hsl(220 15% 10% / 0.05);
-    --shadow-xl: 0 20px 25px hsl(220 15% 10% / 0.1), 0 8px 10px hsl(220 15% 10% / 0.04);
-    --shadow-2xl: 0 30px 40px hsl(220 15% 10% / 0.15), 0 12px 20px hsl(220 15% 10% / 0.08);
+    /* Sophisticated Shadows */
+    --shadow-sm: 0 1px 3px hsl(220 15% 10% / 0.08);
+    --shadow-md: 0 4px 8px hsl(220 15% 10% / 0.12), 0 2px 4px hsl(220 15% 10% / 0.08);
+    --shadow-lg: 0 8px 16px hsl(220 15% 10% / 0.16), 0 4px 8px hsl(220 15% 10% / 0.08);
+    --shadow-xl: 0 16px 32px hsl(220 15% 10% / 0.20), 0 8px 16px hsl(220 15% 10% / 0.08);
+    --shadow-2xl: 0 24px 48px hsl(220 15% 10% / 0.25), 0 12px 24px hsl(220 15% 10% / 0.12);
     
-    --shadow-glow: 0 0 0 1px hsl(240 100% 50% / 0.05), 0 0 50px hsl(240 100% 50% / 0.3);
-    --shadow-glow-intense: 0 0 0 1px hsl(240 100% 50% / 0.1), 0 0 80px hsl(240 100% 50% / 0.4), 0 0 120px hsl(280 100% 60% / 0.2);
-    --shadow-luxury: 0 20px 40px hsl(42 100% 70% / 0.2), 0 8px 16px hsl(42 100% 70% / 0.1);
-    --shadow-platinum: 0 10px 30px hsl(220 10% 85% / 0.3), 0 4px 12px hsl(220 10% 85% / 0.2);
+    --shadow-glow: 0 0 0 1px hsl(45 25% 60% / 0.08), 0 8px 24px hsl(45 25% 60% / 0.12);
+    --shadow-glow-intense: 0 0 0 1px hsl(45 25% 60% / 0.12), 0 12px 32px hsl(45 25% 60% / 0.16);
+    --shadow-luxury: 0 8px 24px hsl(45 35% 65% / 0.15), 0 4px 12px hsl(45 35% 65% / 0.08);
+    --shadow-platinum: 0 4px 16px hsl(220 8% 85% / 0.12), 0 2px 8px hsl(220 8% 85% / 0.08);
     
     /* Animations */
     --animation-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -176,20 +176,20 @@
   }
   
   .nexavoice-animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation: pulse-glow 3s ease-in-out infinite;
   }
   
-  .nexavoice-luxury-shimmer {
+  .nexavoice-elegant-shimmer {
     background: linear-gradient(90deg, 
-      hsl(220 10% 85% / 0.3) 0%, 
-      hsl(42 100% 70% / 0.8) 50%, 
-      hsl(220 10% 85% / 0.3) 100%);
+      hsl(220 8% 92% / 0.2) 0%, 
+      hsl(45 35% 65% / 0.4) 50%, 
+      hsl(220 8% 92% / 0.2) 100%);
     background-size: 200% 100%;
-    animation: luxury-shimmer 3s ease-in-out infinite;
+    animation: elegant-shimmer 4s ease-in-out infinite;
   }
   
-  .nexavoice-premium-float {
-    animation: premium-float 8s ease-in-out infinite;
+  .nexavoice-refined-float {
+    animation: refined-float 6s ease-in-out infinite;
   }
   
   .nexavoice-text-gradient {
@@ -211,14 +211,14 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px hsl(240 100% 50% / 0.3);
+    box-shadow: 0 0 8px hsl(45 25% 60% / 0.12);
   }
   50% {
-    box-shadow: 0 0 40px hsl(240 100% 50% / 0.6), 0 0 80px hsl(240 100% 50% / 0.3);
+    box-shadow: 0 0 16px hsl(45 25% 60% / 0.16), 0 0 24px hsl(45 25% 60% / 0.08);
   }
 }
 
-@keyframes luxury-shimmer {
+@keyframes elegant-shimmer {
   0% {
     background-position: -200% center;
   }
@@ -227,15 +227,12 @@
   }
 }
 
-@keyframes premium-float {
+@keyframes refined-float {
   0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translateY(0px);
   }
-  33% {
-    transform: translateY(-8px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(-12px) rotate(-1deg);
+  50% {
+    transform: translateY(-4px);
   }
 }
 

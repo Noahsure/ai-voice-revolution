@@ -56,17 +56,17 @@ export const Features = () => {
     <section id="features" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-luxury/20 px-6 py-3 rounded-full text-luxury-gold text-sm font-semibold mb-6 shadow-luxury">
+          <div className="inline-flex items-center gap-3 bg-luxury-gold/5 backdrop-blur-xl px-6 py-3 rounded-full text-luxury-gold-dark text-sm font-medium mb-8 border border-luxury-gold/10">
             <Sparkles className="w-4 h-4" />
             Revolutionary Features
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+          <h2 className="text-4xl md:text-6xl font-light mb-8 tracking-tight">
             Everything You Need to
             <br />
-            <span className="nexavoice-text-gradient">Dominate Your Market</span>
+            <span className="text-nexavoice-primary font-medium">Dominate Your Market</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Built for business owners who want results, not complexity. Every feature designed 
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
+            Built for business owners who demand results, not complexity. Every feature designed 
             to get you from zero to profitable calling campaigns in minutes.
           </p>
         </div>
@@ -75,12 +75,12 @@ export const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group p-8 rounded-2xl bg-gradient-card border border-border/50 hover:border-luxury-gold/50 transition-all duration-500 hover:scale-105 hover:shadow-luxury backdrop-blur-sm"
+              className="group p-8 rounded-2xl bg-white border border-border/20 hover:border-luxury-gold/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
             >
-              <div className={`inline-flex p-4 rounded-xl bg-gradient-platinum shadow-platinum ${feature.color} mb-6 group-hover:scale-110 group-hover:shadow-luxury transition-all duration-500`}>
-                <feature.icon className="w-7 h-7" />
+              <div className={`inline-flex p-4 rounded-xl bg-gradient-platinum shadow-sm ${feature.color} mb-6 group-hover:scale-105 transition-all duration-300`}>
+                <feature.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-4 group-hover:text-luxury-gold transition-colors duration-300">
+              <h3 className="text-lg font-semibold mb-4 group-hover:text-luxury-gold-dark transition-colors duration-200">
                 {feature.title}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
@@ -92,33 +92,33 @@ export const Features = () => {
 
         {/* Process Flow */}
         <div className="mt-24">
-          <h3 className="text-3xl font-bold text-center mb-12">
-            Launch Your First Campaign in <span className="nexavoice-text-gradient">3 Simple Steps</span>
+          <h3 className="text-3xl font-light text-center mb-12 tracking-tight">
+            Launch Your First Campaign in <span className="text-nexavoice-primary font-medium">3 Simple Steps</span>
           </h3>
           
           <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
             <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-hero text-white text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-nexavoice-primary text-white text-lg font-medium mb-6 group-hover:scale-105 transition-transform duration-200">
                 1
               </div>
-              <h4 className="text-xl font-semibold mb-2">Upload Contacts</h4>
-              <p className="text-muted-foreground">Drag & drop your CSV or Excel file. We'll auto-detect phone numbers and names.</p>
+              <h4 className="text-lg font-semibold mb-3">Upload Contacts</h4>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Drag & drop your CSV or Excel file. We'll auto-detect phone numbers and names.</p>
             </div>
             
             <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-hero text-white text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-nexavoice-primary text-white text-lg font-medium mb-6 group-hover:scale-105 transition-transform duration-200">
                 2
               </div>
-              <h4 className="text-xl font-semibold mb-2">Choose AI Agent</h4>
-              <p className="text-muted-foreground">Select from 50+ pre-trained agents or create your own custom agent.</p>
+              <h4 className="text-lg font-semibold mb-3">Choose AI Agent</h4>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Select from 50+ pre-trained agents or create your own custom agent.</p>
             </div>
             
             <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-hero text-white text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-nexavoice-primary text-white text-lg font-medium mb-6 group-hover:scale-105 transition-transform duration-200">
                 3
               </div>
-              <h4 className="text-xl font-semibold mb-2">Launch & Monitor</h4>
-              <p className="text-muted-foreground">Hit launch and watch real-time analytics as your AI starts converting leads.</p>
+              <h4 className="text-lg font-semibold mb-3">Launch & Monitor</h4>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Hit launch and watch real-time analytics as your AI starts converting leads.</p>
             </div>
           </div>
         </div>
