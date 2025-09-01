@@ -12,6 +12,7 @@ import TwilioSetup from "./pages/TwilioSetup";
 import Campaigns from "./pages/Campaigns";
 import Agents from "./pages/Agents";
 import Contacts from "./pages/Contacts";
+import LiveMonitoring from "./pages/LiveMonitoring";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +64,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Contacts />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/live-monitoring" 
+              element={
+                <ProtectedRoute>
+                  <LiveMonitoring />
                 </ProtectedRoute>
               } 
             />

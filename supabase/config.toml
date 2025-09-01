@@ -1,1 +1,10 @@
 project_id = "xmpjqtvznswcdfwtrvpc"
+
+[functions.initiate-outbound-call]
+verify_jwt = true
+
+[functions.handle-call-webhook]
+verify_jwt = false
+
+[functions.ai-conversation-handler]
+verify_jwt = false
