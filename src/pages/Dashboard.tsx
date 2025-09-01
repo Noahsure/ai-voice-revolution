@@ -1,10 +1,12 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Users, BarChart3, Settings, Plus } from 'lucide-react';
+import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -65,6 +67,33 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                Choose AI Agent
+                <div className="ml-auto">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800">
+                    <Zap className="w-3 h-3" />
+                    Popular
+                  </span>
+                </div>
+              </CardTitle>
+              <CardDescription>
+                Select from 50+ pre-built AI agents or create your own
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="hero" 
+                className="w-full"
+                onClick={() => navigate('/agents')}
+              >
+                Browse AI Agents
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -77,15 +106,18 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <Button 
-                variant="hero" 
+                variant="outline" 
                 className="w-full"
-                onClick={() => window.location.href = '/campaigns'}
+                onClick={() => navigate('/campaigns')}
               >
                 Start New Campaign
               </Button>
             </CardContent>
           </Card>
+        </div>
 
+        {/* Secondary Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -100,9 +132,26 @@ const Dashboard = () => {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={() => window.location.href = '/twilio-setup'}
+                onClick={() => navigate('/twilio-setup')}
               >
                 Connect Twilio
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Upload Contacts
+              </CardTitle>
+              <CardDescription>
+                Import your contact list from CSV or Excel files
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">
+                Import Contacts
               </Button>
             </CardContent>
           </Card>
@@ -110,23 +159,6 @@ const Dashboard = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-nexavoice-secondary" />
-                AI Agents
-              </CardTitle>
-              <CardDescription>
-                Choose from 50+ pre-built AI agents or create custom ones
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Browse Agents
-              </Button>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -157,6 +189,23 @@ const Dashboard = () => {
             <CardContent>
               <Button variant="outline" className="w-full">
                 Monitor Calls
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-nexavoice-secondary" />
+                Team Management
+              </CardTitle>
+              <CardDescription>
+                Manage your team and assign campaigns
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">
+                Manage Team
               </Button>
             </CardContent>
           </Card>

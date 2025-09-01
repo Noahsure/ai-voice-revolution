@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_agents: {
+        Row: {
+          avg_call_duration: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          knowledge_base: string | null
+          language: string | null
+          max_call_duration: number | null
+          name: string
+          objection_handlers: Json | null
+          opening_message: string
+          personality: string | null
+          purpose: string | null
+          success_rate: number | null
+          system_prompt: string
+          type: string | null
+          updated_at: string | null
+          user_id: string | null
+          voice_id: string
+        }
+        Insert: {
+          avg_call_duration?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          knowledge_base?: string | null
+          language?: string | null
+          max_call_duration?: number | null
+          name: string
+          objection_handlers?: Json | null
+          opening_message: string
+          personality?: string | null
+          purpose?: string | null
+          success_rate?: number | null
+          system_prompt: string
+          type?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          voice_id: string
+        }
+        Update: {
+          avg_call_duration?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          knowledge_base?: string | null
+          language?: string | null
+          max_call_duration?: number | null
+          name?: string
+          objection_handlers?: Json | null
+          opening_message?: string
+          personality?: string | null
+          purpose?: string | null
+          success_rate?: number | null
+          system_prompt?: string
+          type?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          voice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_agents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           company_name: string | null
