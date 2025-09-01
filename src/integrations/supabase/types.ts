@@ -85,6 +85,135 @@ export type Database = {
           },
         ]
       }
+      campaigns: {
+        Row: {
+          agent_id: string | null
+          completed_calls: number | null
+          created_at: string | null
+          id: string
+          name: string
+          status: string | null
+          success_rate: number | null
+          total_contacts: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          completed_calls?: number | null
+          created_at?: string | null
+          id?: string
+          name: string
+          status?: string | null
+          success_rate?: number | null
+          total_contacts?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          completed_calls?: number | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          status?: string | null
+          success_rate?: number | null
+          total_contacts?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          call_attempts: number | null
+          call_result: string | null
+          call_status: string | null
+          campaign_id: string | null
+          company: string | null
+          created_at: string | null
+          custom_fields: Json | null
+          email: string | null
+          first_name: string | null
+          id: string
+          last_called_at: string | null
+          last_name: string | null
+          next_call_at: string | null
+          notes: string | null
+          phone_number: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          call_attempts?: number | null
+          call_result?: string | null
+          call_status?: string | null
+          campaign_id?: string | null
+          company?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_called_at?: string | null
+          last_name?: string | null
+          next_call_at?: string | null
+          notes?: string | null
+          phone_number: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          call_attempts?: number | null
+          call_result?: string | null
+          call_status?: string | null
+          campaign_id?: string | null
+          company?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_called_at?: string | null
+          last_name?: string | null
+          next_call_at?: string | null
+          notes?: string | null
+          phone_number?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           company_name: string | null

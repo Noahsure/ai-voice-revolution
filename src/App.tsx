@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import TwilioSetup from "./pages/TwilioSetup";
 import Campaigns from "./pages/Campaigns";
 import Agents from "./pages/Agents";
+import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Agents />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/contacts" 
+              element={
+                <ProtectedRoute>
+                  <Contacts />
                 </ProtectedRoute>
               } 
             />
