@@ -20,7 +20,8 @@ const TwilioSetup = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [credentials, setCredentials] = useState({
     accountSid: '',
-    authToken: ''
+    authToken: '',
+    phoneNumber: ''
   });
 
   useEffect(() => {
@@ -33,16 +34,17 @@ const TwilioSetup = () => {
     try {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('twilio_account_sid, twilio_auth_token')
+        .select('twilio_account_sid, twilio_auth_token, phone_number')
         .eq('user_id', user.id)
         .single();
 
       if (profile) {
         setCredentials({
           accountSid: profile.twilio_account_sid || '',
-          authToken: profile.twilio_auth_token || ''
+          authToken: profile.twilio_auth_token || '',
+          phoneNumber: profile.phone_number || ''
         });
-        setIsConnected(!!(profile.twilio_account_sid && profile.twilio_auth_token));
+        setIsConnected(!!(profile.twilio_account_sid && profile.twilio_auth_token && profile.phone_number));
       }
     } catch (error) {
       console.error('Error loading credentials:', error);
@@ -68,6 +70,7 @@ const TwilioSetup = () => {
           user_id: user.id,
           twilio_account_sid: credentials.accountSid,
           twilio_auth_token: credentials.authToken,
+          phone_number: credentials.phoneNumber,
           updated_at: new Date().toISOString()
         });
 
@@ -219,6 +222,17 @@ const TwilioSetup = () => {
                 placeholder="Enter your Twilio Auth Token"
                 value={credentials.authToken}
                 onChange={(e) => setCredentials(prev => ({ ...prev, authToken: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Twilio Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                placeholder="e.g., +447700900123"
+                value={credentials.phoneNumber}
+                onChange={(e) => setCredentials(prev => ({ ...prev, phoneNumber: e.target.value }))}
               />
             </div>
 

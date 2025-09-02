@@ -136,7 +136,19 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
     } catch (error) {
       console.error('Error refreshing subscription:', error);
-      toast.error('Failed to load subscription data');
+      // Fallback to trial mode so the app remains usable while billing is configured
+      const trialEnd = new Date();
+      trialEnd.setDate(trialEnd.getDate() + 7);
+      setSubscription({
+        subscribed: true,
+        plan_type: 'trial',
+        status: 'trialing',
+        trial_end: trialEnd.toISOString(),
+        current_period_end: trialEnd.toISOString(),
+        cancel_at_period_end: false,
+        days_left: 7,
+      });
+      toast.warning('Using trial mode while billing is configured');
     } finally {
       setLoading(false);
     }

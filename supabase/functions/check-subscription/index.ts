@@ -53,50 +53,6 @@ serve(async (req) => {
 
     logStep("Existing subscription checked", { existingSubscription });
 
-    // Get Stripe customer
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    
-    if (customers.data.length === 0) {
-      logStep("No Stripe customer found, creating trial subscription");
-      
-      // Create trial subscription record
-      const trialEnd = new Date();
-      trialEnd.setDate(trialEnd.getDate() + 7); // 7 days from now
-      
-      await supabaseClient.from("subscriptions").upsert({
-        user_id: user.id,
-        stripe_customer_id: null,
-        stripe_subscription_id: null,
-        plan_type: "trial",
-        status: "trialing",
-        trial_end: trialEnd.toISOString(),
-        current_period_start: new Date().toISOString(),
-        current_period_end: trialEnd.toISOString(),
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id' });
-
-      return new Response(JSON.stringify({
-        subscribed: true,
-        plan_type: "trial",
-        status: "trialing",
-        trial_end: trialEnd.toISOString(),
-        days_left: 7
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
-
-    const customerId = customers.data[0].id;
-    logStep("Found Stripe customer", { customerId });
-
-    // Get active subscriptions
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 1,
-    });
-
     let subscriptionData = {
       subscribed: false,
       plan_type: "trial",
@@ -107,49 +63,155 @@ serve(async (req) => {
       days_left: 0
     };
 
-    if (subscriptions.data.length > 0) {
-      const subscription = subscriptions.data[0];
-      const currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+    try {
+      // Get Stripe customer
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
       
-      // Determine plan type from amount
-      const amount = subscription.items.data[0].price.unit_amount || 0;
-      let planType = "trial";
-      if (amount >= 25000) planType = "premium"; // £250+ 
-      else if (amount >= 10000) planType = "starter"; // £100+
+      if (customers.data.length === 0) {
+        logStep("No Stripe customer found, creating trial subscription");
+        
+        // Create trial subscription record
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7); // 7 days from now
+        
+        await supabaseClient.from("subscriptions").upsert({
+          user_id: user.id,
+          stripe_customer_id: null,
+          stripe_subscription_id: null,
+          plan_type: "trial",
+          status: "trialing",
+          trial_end: trialEnd.toISOString(),
+          current_period_start: new Date().toISOString(),
+          current_period_end: trialEnd.toISOString(),
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' });
 
-      subscriptionData = {
-        subscribed: true,
-        plan_type: planType,
-        status: subscription.status,
-        trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
-        current_period_end: currentPeriodEnd.toISOString(),
-        cancel_at_period_end: subscription.cancel_at_period_end,
-        days_left: Math.max(0, Math.ceil((currentPeriodEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
-      };
+        subscriptionData = {
+          subscribed: true,
+          plan_type: "trial",
+          status: "trialing",
+          trial_end: trialEnd.toISOString(),
+          current_period_end: trialEnd.toISOString(),
+          cancel_at_period_end: false,
+          days_left: 7
+        };
+      } else {
+        const customerId = customers.data[0].id;
+        logStep("Found Stripe customer", { customerId });
+        
+        // Get active subscriptions
+        const subscriptions = await stripe.subscriptions.list({
+          customer: customerId,
+          status: "active",
+          limit: 1,
+        });
 
-      logStep("Active subscription found", { subscriptionId: subscription.id, planType, status: subscription.status });
+        if (subscriptions.data.length > 0) {
+          const subscription = subscriptions.data[0];
+          const currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+          
+          // Determine plan type from amount
+          const amount = subscription.items.data[0].price.unit_amount || 0;
+          let planType = "trial";
+          if (amount >= 25000) planType = "premium"; // £250+ 
+          else if (amount >= 10000) planType = "starter"; // £100+
 
-      // Update database with latest subscription info
-      await supabaseClient.from("subscriptions").upsert({
-        user_id: user.id,
-        stripe_customer_id: customerId,
-        stripe_subscription_id: subscription.id,
-        plan_type: planType,
-        status: subscription.status,
-        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-        current_period_end: currentPeriodEnd.toISOString(),
-        cancel_at_period_end: subscription.cancel_at_period_end,
-        trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id' });
+          subscriptionData = {
+            subscribed: true,
+            plan_type: planType,
+            status: subscription.status,
+            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+            current_period_end: currentPeriodEnd.toISOString(),
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            days_left: Math.max(0, Math.ceil((currentPeriodEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+          };
 
-    } else {
-      // Check if trial period has expired
+          logStep("Active subscription found", { subscriptionId: subscription.id, planType, status: subscription.status });
+
+          // Update database with latest subscription info
+          await supabaseClient.from("subscriptions").upsert({
+            user_id: user.id,
+            stripe_customer_id: customerId,
+            stripe_subscription_id: subscription.id,
+            plan_type: planType,
+            status: subscription.status,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: currentPeriodEnd.toISOString(),
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'user_id' });
+        } else {
+          // No active subscription - respect existing trial if present
+          if (existingSubscription) {
+            const trialEnd = new Date(existingSubscription.trial_end || existingSubscription.current_period_end);
+            const now = new Date();
+            const isTrialExpired = trialEnd < now;
+            
+            if (isTrialExpired) {
+              subscriptionData = {
+                subscribed: false,
+                plan_type: "trial",
+                status: "expired",
+                trial_end: trialEnd.toISOString(),
+                current_period_end: null,
+                cancel_at_period_end: false,
+                days_left: 0
+              };
+              await supabaseClient.from("subscriptions").update({
+                status: "expired",
+                updated_at: new Date().toISOString(),
+              }).eq("user_id", user.id);
+            } else {
+              const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              subscriptionData = {
+                subscribed: true,
+                plan_type: "trial",
+                status: "trialing",
+                trial_end: trialEnd.toISOString(),
+                current_period_end: trialEnd.toISOString(),
+                cancel_at_period_end: false,
+                days_left: daysLeft
+              };
+            }
+          } else {
+            // Create new 7-day trial
+            const trialEnd = new Date();
+            trialEnd.setDate(trialEnd.getDate() + 7);
+            await supabaseClient.from("subscriptions").upsert({
+              user_id: user.id,
+              stripe_customer_id: null,
+              stripe_subscription_id: null,
+              plan_type: "trial",
+              status: "trialing",
+              trial_end: trialEnd.toISOString(),
+              current_period_start: new Date().toISOString(),
+              current_period_end: trialEnd.toISOString(),
+              updated_at: new Date().toISOString(),
+            }, { onConflict: 'user_id' });
+            subscriptionData = {
+              subscribed: true,
+              plan_type: "trial",
+              status: "trialing",
+              trial_end: trialEnd.toISOString(),
+              current_period_end: trialEnd.toISOString(),
+              cancel_at_period_end: false,
+              days_left: 7
+            };
+          }
+
+          logStep("No active subscription found", { existingSubscription, subscriptionData });
+        }
+      }
+    } catch (stripeError) {
+      // Fallback when Stripe is misconfigured or unavailable
+      const message = stripeError instanceof Error ? stripeError.message : String(stripeError);
+      logStep("Stripe error, falling back to trial", { message });
+
       if (existingSubscription) {
-        const trialEnd = new Date(existingSubscription.trial_end || existingSubscription.current_period_end);
+        const trialEnd = new Date(existingSubscription.trial_end || existingSubscription.current_period_end || new Date());
         const now = new Date();
         const isTrialExpired = trialEnd < now;
-        
         if (isTrialExpired) {
           subscriptionData = {
             subscribed: false,
@@ -160,14 +222,12 @@ serve(async (req) => {
             cancel_at_period_end: false,
             days_left: 0
           };
-          
-          // Update status to expired
           await supabaseClient.from("subscriptions").update({
             status: "expired",
             updated_at: new Date().toISOString(),
           }).eq("user_id", user.id);
         } else {
-          const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+          const daysLeft = Math.max(0, Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
           subscriptionData = {
             subscribed: true,
             plan_type: "trial",
@@ -178,10 +238,32 @@ serve(async (req) => {
             days_left: daysLeft
           };
         }
+      } else {
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7);
+        await supabaseClient.from("subscriptions").upsert({
+          user_id: user.id,
+          stripe_customer_id: null,
+          stripe_subscription_id: null,
+          plan_type: "trial",
+          status: "trialing",
+          trial_end: trialEnd.toISOString(),
+          current_period_start: new Date().toISOString(),
+          current_period_end: trialEnd.toISOString(),
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' });
+        subscriptionData = {
+          subscribed: true,
+          plan_type: "trial",
+          status: "trialing",
+          trial_end: trialEnd.toISOString(),
+          current_period_end: trialEnd.toISOString(),
+          cancel_at_period_end: false,
+          days_left: 7
+        };
       }
-      
-      logStep("No active subscription found", { existingSubscription, subscriptionData });
     }
+
 
     return new Response(JSON.stringify(subscriptionData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
