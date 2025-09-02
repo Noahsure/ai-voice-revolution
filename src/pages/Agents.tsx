@@ -103,11 +103,58 @@ const Agents = () => {
   };
 
   const playVoicePreview = async (voiceId: string, agentName: string) => {
-    toast({
-      title: "Voice Preview",
-      description: `Playing preview for ${agentName}`,
-    });
-    // TODO: Implement ElevenLabs voice preview
+    try {
+      const sampleText = `Hi there! I'm ${agentName}, your AI assistant. I'm here to help you achieve your goals with professional and friendly service. This is what I sound like!`;
+      
+      toast({
+        title: "Voice Preview",
+        description: `Generating preview for ${agentName}...`,
+      });
+
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: {
+          text: sampleText,
+          voiceId: voiceId,
+          provider: 'elevenlabs'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.audioContent) {
+        // Create audio blob and play it
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
+          { type: 'audio/mpeg' }
+        );
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        audio.play().then(() => {
+          toast({
+            title: "Voice Preview",
+            description: `Now playing ${agentName}'s voice - listen carefully!`,
+          });
+          
+          // Clean up the URL after playing
+          audio.onended = () => URL.revokeObjectURL(audioUrl);
+        }).catch((error) => {
+          console.error('Audio playback failed:', error);
+          toast({
+            title: "Playback Error", 
+            description: "Could not play audio. Please check your browser settings.",
+            variant: "destructive",
+          });
+        });
+      }
+    } catch (error) {
+      console.error('Voice preview error:', error);
+      toast({
+        title: "Voice Preview Error",
+        description: error.message || 'Failed to generate voice preview',
+        variant: "destructive",
+      });
+    }
   };
 
   const testAgent = (agentId: string, agentName: string) => {

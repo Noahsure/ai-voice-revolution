@@ -109,12 +109,59 @@ const AgentBuilder = ({ onClose }: AgentBuilderProps) => {
     }
   };
 
-  const testVoice = (voiceId: string) => {
-    toast({
-      title: "Voice Preview",
-      description: "Playing voice sample...",
-    });
-    // TODO: Implement ElevenLabs voice preview
+  const testVoice = async (voiceId: string) => {
+    try {
+      const sampleText = "Hello! This is a preview of my voice. I'm excited to help you with your business needs and provide excellent customer service. How does this sound?";
+      
+      toast({
+        title: "Voice Preview",
+        description: "Generating voice sample...",
+      });
+
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: {
+          text: sampleText,
+          voiceId: voiceId,
+          provider: 'elevenlabs'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.audioContent) {
+        // Create audio blob and play it
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
+          { type: 'audio/mpeg' }
+        );
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        audio.play().then(() => {
+          toast({
+            title: "Voice Preview",
+            description: "Playing voice sample - listen carefully!",
+          });
+          
+          // Clean up the URL after playing
+          audio.onended = () => URL.revokeObjectURL(audioUrl);
+        }).catch((error) => {
+          console.error('Audio playback failed:', error);
+          toast({
+            title: "Playback Error",
+            description: "Could not play audio. Please check your browser settings.",
+            variant: "destructive",
+          });
+        });
+      }
+    } catch (error) {
+      console.error('Voice preview error:', error);
+      toast({
+        title: "Voice Preview Error",
+        description: error.message || 'Failed to generate voice preview',
+        variant: "destructive",
+      });
+    }
   };
 
   const renderStep = () => {
