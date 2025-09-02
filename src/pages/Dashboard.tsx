@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle, Mic } from 'lucide-react';
+import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle, Mic, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TrialBanner } from '@/components/TrialBanner';
 import { Loader2 } from 'lucide-react';
@@ -259,7 +259,7 @@ const Dashboard = () => {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <Card>
+          <Card className="luxury-hover sophisticated-scale">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-nexavoice-accent" />
@@ -272,7 +272,7 @@ const Dashboard = () => {
             <CardContent>
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full luxury-hover"
                 onClick={() => navigate('/analytics')}
               >
                 View Analytics
@@ -280,7 +280,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="luxury-hover sophisticated-scale">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-nexavoice-primary" />
@@ -293,7 +293,7 @@ const Dashboard = () => {
             <CardContent>
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full luxury-hover"
                 onClick={() => navigate('/live-monitoring')}
               >
                 Monitor Calls
@@ -301,7 +301,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="luxury-hover sophisticated-scale">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-nexavoice-secondary" />
@@ -314,7 +314,7 @@ const Dashboard = () => {
             <CardContent>
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full luxury-hover"
                 onClick={() => navigate('/billing')}
               >
                 Manage Billing
@@ -324,7 +324,7 @@ const Dashboard = () => {
         </div>
 
         {/* Voice System Testing */}
-        <Card className="mt-8">
+        <Card className="mt-8 luxury-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mic className="w-5 h-5 text-nexavoice-primary" />
@@ -336,26 +336,27 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">System Status</TabsTrigger>
                 <TabsTrigger value="testing">Voice Testing</TabsTrigger>
+                <TabsTrigger value="analytics">Real-Time Analytics</TabsTrigger>
               </TabsList>
               
               <TabsContent value="overview" className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div className="text-center p-3 rounded-lg border">
+                  <div className="text-center p-3 rounded-lg border luxury-hover refined-pulse">
                     <div className="text-green-600 font-semibold">✓ ElevenLabs TTS</div>
                     <div className="text-muted-foreground">Connected</div>
                   </div>
-                  <div className="text-center p-3 rounded-lg border">
+                  <div className="text-center p-3 rounded-lg border luxury-hover">
                     <div className="text-green-600 font-semibold">✓ OpenAI Whisper</div>
                     <div className="text-muted-foreground">Ready</div>
                   </div>
-                  <div className="text-center p-3 rounded-lg border">
+                  <div className="text-center p-3 rounded-lg border luxury-hover">
                     <div className="text-green-600 font-semibold">✓ Twilio Integration</div>
                     <div className="text-muted-foreground">Active</div>
                   </div>
-                  <div className="text-center p-3 rounded-lg border">
+                  <div className="text-center p-3 rounded-lg border luxury-hover">
                     <div className="text-blue-600 font-semibold">○ AI Conversations</div>
                     <div className="text-muted-foreground">Enhanced</div>
                   </div>
@@ -364,6 +365,23 @@ const Dashboard = () => {
               
               <TabsContent value="testing">
                 <VoiceTestingPanel />
+              </TabsContent>
+
+              <TabsContent value="analytics" className="space-y-4">
+                <div className="text-center py-8">
+                  <Activity className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Real-Time Voice Analytics</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Advanced voice quality monitoring and performance analytics
+                  </p>
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate('/analytics')}
+                    className="luxury-hover"
+                  >
+                    View Full Analytics Dashboard
+                  </Button>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
