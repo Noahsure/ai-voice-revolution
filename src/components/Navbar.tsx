@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleAuthClick = () => {
+    navigate('/auth');
+  };
 
   const navLinks = [
     { href: "#features", label: "Features" },
@@ -41,10 +47,10 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" onClick={() => window.location.href = '/auth'}>
+            <Button variant="ghost" onClick={handleAuthClick}>
               Sign In
             </Button>
-            <Button variant="hero" className="group" onClick={() => window.location.href = '/auth'}>
+            <Button variant="hero" className="group" onClick={handleAuthClick}>
               <Zap className="w-4 h-4" />
               Start Free Trial
             </Button>
@@ -79,10 +85,10 @@ export const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
-                <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/auth'}>
+                <Button variant="ghost" className="justify-start" onClick={handleAuthClick}>
                   Sign In
                 </Button>
-                <Button variant="hero" onClick={() => window.location.href = '/auth'}>
+                <Button variant="hero" onClick={handleAuthClick}>
                   <Zap className="w-4 h-4" />
                   Start Free Trial
                 </Button>

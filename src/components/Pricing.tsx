@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Check, Zap, Crown, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Pricing = () => {
+  const navigate = useNavigate();
+
+  const handlePlanSelection = (planName: string) => {
+    // Navigate to auth page with plan parameter
+    navigate(`/auth?plan=${planName.toLowerCase()}`);
+  };
   const plans = [
     {
       name: "Starter",
@@ -111,6 +118,7 @@ export const Pricing = () => {
                 variant={plan.buttonVariant} 
                 size="lg" 
                 className="w-full mb-8"
+                onClick={() => handlePlanSelection(plan.name)}
               >
                 {plan.buttonText}
               </Button>

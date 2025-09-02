@@ -1,8 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Zap, Users, BarChart3, ArrowRight, Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/nexavoice-hero.jpg";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleStartTrial = () => {
+    navigate('/auth');
+  };
+
+  const handleWatchDemo = () => {
+    // Scroll to features section or open demo modal
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with overlay */}
@@ -64,11 +78,11 @@ export const Hero = () => {
           
           {/* Sophisticated CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button variant="hero" size="xl" className="group font-medium" onClick={() => window.location.href = '/auth'}>
+            <Button variant="hero" size="xl" className="group font-medium" onClick={handleStartTrial}>
               Start Free 7-Day Trial
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
             </Button>
-            <Button variant="glass" size="xl" className="group font-medium">
+            <Button variant="glass" size="xl" className="group font-medium" onClick={handleWatchDemo}>
               <Play className="w-5 h-5" />
               Watch Demo
             </Button>

@@ -1,7 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, Twitter, Linkedin, Github, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleStartTrial = () => {
+    navigate('/auth');
+  };
+
+  const handleScheduleDemo = () => {
+    // Scroll to features section for demo
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   const footerLinks = {
     product: [
       { label: "Features", href: "#features" },
@@ -46,11 +60,11 @@ export const Footer = () => {
               Join thousands of businesses already using NEXAVOICE to transform their call operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="xl">
+              <Button variant="hero" size="xl" onClick={handleStartTrial}>
                 <Zap className="w-5 h-5" />
                 Start Your Free Trial
               </Button>
-              <Button variant="outline" size="xl">
+              <Button variant="outline" size="xl" onClick={handleScheduleDemo}>
                 Schedule Demo
               </Button>
             </div>
