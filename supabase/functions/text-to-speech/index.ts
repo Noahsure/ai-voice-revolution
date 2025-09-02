@@ -6,6 +6,21 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000; // 32KB chunks
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    let chunkBinary = '';
+    for (let j = 0; j < chunk.length; j++) {
+      chunkBinary += String.fromCharCode(chunk[j]);
+    }
+    binary += chunkBinary;
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -55,7 +70,7 @@ serve(async (req) => {
 
       // Convert audio to base64
       const audioBuffer = await response.arrayBuffer();
-      const base64Audio = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+      const base64Audio = arrayBufferToBase64(audioBuffer);
 
       console.log(`Generated ${audioBuffer.byteLength} bytes of audio`);
 
@@ -101,7 +116,7 @@ serve(async (req) => {
 
       // Convert audio to base64
       const audioBuffer = await response.arrayBuffer();
-      const base64Audio = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+      const base64Audio = arrayBufferToBase64(audioBuffer);
 
       console.log(`Generated ${audioBuffer.byteLength} bytes of audio`);
 
