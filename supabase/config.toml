@@ -29,3 +29,16 @@ verify_jwt = true
 
 [functions.track-usage]
 verify_jwt = true
+
+# Call reliability system functions
+[functions.call-retry-handler]
+verify_jwt = true
+
+[functions.call-state-monitor]
+verify_jwt = false
+
+[functions.campaign-queue-manager]
+verify_jwt = false
+
+[functions.call-error-recovery]
+verify_jwt = false

@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle, Mic, Activity } from 'lucide-react';
+import { Phone, Users, BarChart3, Settings, Plus, Bot, Zap, CreditCard, Clock, AlertTriangle, Mic, Activity, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TrialBanner } from '@/components/TrialBanner';
 import { Loader2 } from 'lucide-react';
 import VoiceTestingPanel from '@/components/VoiceTestingPanel';
+import CallReliabilityMonitor from '@/components/CallReliabilityMonitor';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -336,9 +337,10 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="overview">System Status</TabsTrigger>
                 <TabsTrigger value="testing">Voice Testing</TabsTrigger>
+                <TabsTrigger value="reliability">Reliability Monitor</TabsTrigger>
                 <TabsTrigger value="analytics">Real-Time Analytics</TabsTrigger>
               </TabsList>
               
@@ -365,6 +367,10 @@ const Dashboard = () => {
               
               <TabsContent value="testing">
                 <VoiceTestingPanel />
+              </TabsContent>
+
+              <TabsContent value="reliability">
+                <CallReliabilityMonitor />
               </TabsContent>
 
               <TabsContent value="analytics" className="space-y-4">
