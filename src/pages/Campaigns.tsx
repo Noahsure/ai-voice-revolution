@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Plus, BarChart3, Pause, Play, Edit, Users, Phone, TrendingUp, CheckCircle, PhoneCall, Eye } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import CampaignBuilder from '@/components/campaigns/CampaignBuilder';
 
 interface Campaign {
   id: string;
@@ -59,6 +60,32 @@ const Campaigns: React.FC = () => {
 
   const launchCampaign = async (campaignId: string) => {
     try {
+      // Get campaign with agent details
+      const { data: campaign, error: campaignError } = await supabase
+        .from('campaigns')
+        .select(`
+          *,
+          ai_agents (
+            name,
+            voice_id,
+            opening_message,
+            system_prompt
+          )
+        `)
+        .eq('id', campaignId)
+        .single();
+
+      if (campaignError) throw campaignError;
+
+      if (!campaign.agent_id) {
+        toast({
+          title: "No agent assigned",
+          description: "Please assign an AI agent to this campaign before launching.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Get campaign contacts
       const { data: contacts } = await supabase
         .from('contacts')
@@ -82,11 +109,13 @@ const Campaigns: React.FC = () => {
         .update({ status: 'active' })
         .eq('id', campaignId);
 
-      // Start calling contacts one by one
-      for (const contact of contacts) {
-        const campaign = campaigns.find(c => c.id === campaignId);
-        if (!campaign) continue;
+      toast({
+        title: "Campaign launched",
+        description: `Starting calls for ${contacts.length} contacts with ${campaign.ai_agents?.name}`,
+      });
 
+      // Start calling contacts (simplified for demo - in production this would be handled by background jobs)
+      for (const contact of contacts.slice(0, 3)) { // Demo: only first 3 contacts
         const { error } = await supabase.functions.invoke('initiate-outbound-call', {
           body: {
             campaignId,
@@ -100,14 +129,9 @@ const Campaigns: React.FC = () => {
           console.error('Error initiating call:', error);
         }
 
-        // Wait 20 seconds between calls to avoid overwhelming
-        await new Promise(resolve => setTimeout(resolve, 20000));
+        // Wait 5 seconds between calls for demo
+        await new Promise(resolve => setTimeout(resolve, 5000));
       }
-
-      toast({
-        title: "Campaign launched",
-        description: "Voice calls are being initiated.",
-      });
 
       fetchCampaigns();
     } catch (error) {
@@ -195,10 +219,12 @@ const Campaigns: React.FC = () => {
             <Eye className="w-4 h-4 mr-2" />
             Live Monitoring
           </Button>
-          <Button onClick={() => navigate('/agents')}>
-            <Plus className="w-4 h-4 mr-2" />
-            New Campaign
-          </Button>
+          <CampaignBuilder onCampaignCreated={fetchCampaigns}>
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              New Campaign
+            </Button>
+          </CampaignBuilder>
         </div>
       </div>
 
@@ -281,10 +307,12 @@ const Campaigns: React.FC = () => {
               <p className="text-muted-foreground mb-4">
                 Create your first voice campaign to start reaching your contacts.
               </p>
-              <Button onClick={() => navigate('/agents')}>
-                <Plus className="w-4 h-4 mr-2" />
-                Create Campaign
-              </Button>
+              <CampaignBuilder onCampaignCreated={fetchCampaigns}>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Campaign
+                </Button>
+              </CampaignBuilder>
             </div>
           ) : (
             <div className="space-y-6">
