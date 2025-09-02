@@ -21,7 +21,7 @@ serve(async (req) => {
     const callDuration = formData.get('CallDuration') as string;
     const recordingUrl = formData.get('RecordingUrl') as string;
 
-    console.log(`Webhook received - SID: ${callSid}, Status: ${callStatus}`);
+    console.log(`Webhook received - SID: ${callSid}, Status: ${callStatus}, Duration: ${callDuration}`);
 
     // Initialize Supabase client
     const supabaseUrl = "https://xmpjqtvznswcdfwtrvpc.supabase.co";
@@ -46,9 +46,10 @@ serve(async (req) => {
     if (callStatus === 'busy' || callStatus === 'failed') mappedStatus = 'failed';
     if (callStatus === 'no-answer') mappedStatus = 'no_answer';
 
-    // Update call record
+    // Update call record and handle potential failures
     const updateData: any = {
-      call_status: mappedStatus
+      call_status: mappedStatus,
+      updated_at: new Date().toISOString()
     };
 
     if (callStatus === 'completed') {
@@ -58,6 +59,61 @@ serve(async (req) => {
 
     if (recordingUrl) {
       updateData.recording_url = recordingUrl;
+    }
+
+    // Handle failures with comprehensive error tracking
+    if (['failed', 'busy', 'no-answer'].includes(callStatus)) {
+      updateData.failure_reason = callStatus;
+      updateData.error_message = `Call ended with Twilio status: ${callStatus}`;
+      updateData.last_error_at = new Date().toISOString();
+      
+      // Trigger retry handler for recoverable failures
+      const isRetryable = ['busy', 'no-answer'].includes(callStatus);
+      if (isRetryable) {
+        // Add to monitoring system
+        await supabase
+          .from('call_monitoring')
+          .upsert({
+            user_id: callRecord.user_id,
+            call_record_id: callRecord.id,
+            twilio_call_sid: callSid,
+            status: 'retry_required',
+            health_score: 50
+          }, {
+            onConflict: 'call_record_id'
+          });
+
+        // Trigger retry handler asynchronously
+        const retryResponse = await fetch(`${supabaseUrl}/functions/v1/call-retry-handler`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`
+          },
+          body: JSON.stringify({
+            callRecordId: callRecord.id,
+            failureReason: callStatus,
+            errorMessage: `Twilio webhook: ${callStatus}`
+          })
+        });
+
+        if (!retryResponse.ok) {
+          console.error('Failed to trigger retry handler');
+        }
+      }
+    } else if (callStatus === 'completed') {
+      // Update monitoring for successful calls
+      await supabase
+        .from('call_monitoring')
+        .upsert({
+          user_id: callRecord.user_id,
+          call_record_id: callRecord.id,
+          twilio_call_sid: callSid,
+          status: 'completed',
+          health_score: 100
+        }, {
+          onConflict: 'call_record_id'
+        });
     }
 
     await supabase

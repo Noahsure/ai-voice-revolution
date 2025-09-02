@@ -780,6 +780,25 @@ export type Database = {
         Args: { retry_count: number }
         Returns: string
       }
+      get_call_system_health: {
+        Args: { user_uuid: string }
+        Returns: {
+          active_calls: number
+          avg_retry_count: number
+          failed_calls: number
+          retry_calls: number
+          success_rate: number
+          total_calls: number
+        }[]
+      }
+      handle_call_failure: {
+        Args: {
+          call_record_id: string
+          error_message?: string
+          failure_reason?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

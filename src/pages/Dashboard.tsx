@@ -11,6 +11,7 @@ import { TrialBanner } from '@/components/TrialBanner';
 import { Loader2 } from 'lucide-react';
 import VoiceTestingPanel from '@/components/VoiceTestingPanel';
 import CallReliabilityMonitor from '@/components/CallReliabilityMonitor';
+import SystemHealthIndicator from '@/components/SystemHealthIndicator';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -336,6 +337,11 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* System Health Indicator */}
+            <div className="mb-6">
+              <SystemHealthIndicator />
+            </div>
+
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="overview">System Status</TabsTrigger>
@@ -361,6 +367,29 @@ const Dashboard = () => {
                   <div className="text-center p-3 rounded-lg border luxury-hover">
                     <div className="text-blue-600 font-semibold">○ AI Conversations</div>
                     <div className="text-muted-foreground">Enhanced</div>
+                  </div>
+                </div>
+                
+                {/* Reliability System Status */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2">Call Reliability System Active</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                    <div className="text-center">
+                      <div className="text-green-600 font-medium">✓ Auto-Retry</div>
+                      <div className="text-green-600/80">Exponential Backoff</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-green-600 font-medium">✓ State Monitor</div>
+                      <div className="text-green-600/80">Stuck Call Detection</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-green-600 font-medium">✓ Queue Manager</div>
+                      <div className="text-green-600/80">Rate Limiting</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-green-600 font-medium">✓ Error Recovery</div>
+                      <div className="text-green-600/80">Webhook Failures</div>
+                    </div>
                   </div>
                 </div>
               </TabsContent>
