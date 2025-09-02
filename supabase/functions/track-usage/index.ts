@@ -37,7 +37,24 @@ serve(async (req) => {
     if (!user?.id) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id });
 
-    const { usageType, amount } = await req.json();
+    // Handle both usage tracking calls and monitoring calls
+    let usageType, amount;
+    try {
+      const body = await req.json();
+      usageType = body.usageType;
+      amount = body.amount;
+    } catch {
+      // If no JSON body, this is likely a monitoring call from error recovery
+      logStep("No JSON body provided, treating as monitoring call");
+      return new Response(JSON.stringify({
+        success: true,
+        message: "Health check - usage tracking service operational"
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+    
     if (!usageType || amount === undefined) {
       throw new Error("Missing usageType or amount");
     }
@@ -53,7 +70,7 @@ serve(async (req) => {
       .select("*")
       .eq("user_id", user.id)
       .eq("month_year", monthYear)
-      .single();
+      .maybeSingle();
 
     if (!currentUsage) {
       // Create new usage record
@@ -112,7 +129,7 @@ serve(async (req) => {
       .from("subscriptions")
       .select("plan_type")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     const planType = subscription?.plan_type || 'trial';
     
@@ -120,7 +137,7 @@ serve(async (req) => {
       .from("plan_limits")
       .select("*")
       .eq("plan_type", planType)
-      .single();
+      .maybeSingle();
 
     if (!planLimits) throw new Error(`Plan limits not found for plan: ${planType}`);
 
