@@ -141,6 +141,45 @@ export type Database = {
           },
         ]
       }
+      call_monitoring: {
+        Row: {
+          call_record_id: string | null
+          created_at: string | null
+          health_score: number | null
+          id: string
+          last_heartbeat: string | null
+          status: string
+          timeout_threshold: unknown | null
+          twilio_call_sid: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          call_record_id?: string | null
+          created_at?: string | null
+          health_score?: number | null
+          id?: string
+          last_heartbeat?: string | null
+          status: string
+          timeout_threshold?: unknown | null
+          twilio_call_sid?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          call_record_id?: string | null
+          created_at?: string | null
+          health_score?: number | null
+          id?: string
+          last_heartbeat?: string | null
+          status?: string
+          timeout_threshold?: unknown | null
+          twilio_call_sid?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       call_quality_scores: {
         Row: {
           call_record_id: string | null
@@ -200,6 +239,60 @@ export type Database = {
           },
         ]
       }
+      call_queue: {
+        Row: {
+          agent_id: string | null
+          attempts: number | null
+          campaign_id: string
+          completed_at: string | null
+          contact_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          max_attempts: number | null
+          priority: number | null
+          processing_started_at: string | null
+          scheduled_at: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          attempts?: number | null
+          campaign_id: string
+          completed_at?: string | null
+          contact_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_attempts?: number | null
+          priority?: number | null
+          processing_started_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          attempts?: number | null
+          campaign_id?: string
+          completed_at?: string | null
+          contact_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_attempts?: number | null
+          priority?: number | null
+          processing_started_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       call_records: {
         Row: {
           agent_id: string | null
@@ -213,9 +306,14 @@ export type Database = {
           created_at: string
           duration_seconds: number | null
           end_time: string | null
+          error_message: string | null
+          failure_reason: string | null
           id: string
+          last_error_at: string | null
+          next_retry_at: string | null
           phone_number: string
           recording_url: string | null
+          retry_count: number | null
           sentiment_score: number | null
           start_time: string | null
           transcript: string | null
@@ -235,9 +333,14 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           end_time?: string | null
+          error_message?: string | null
+          failure_reason?: string | null
           id?: string
+          last_error_at?: string | null
+          next_retry_at?: string | null
           phone_number: string
           recording_url?: string | null
+          retry_count?: number | null
           sentiment_score?: number | null
           start_time?: string | null
           transcript?: string | null
@@ -257,9 +360,14 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           end_time?: string | null
+          error_message?: string | null
+          failure_reason?: string | null
           id?: string
+          last_error_at?: string | null
+          next_retry_at?: string | null
           phone_number?: string
           recording_url?: string | null
+          retry_count?: number | null
           sentiment_score?: number | null
           start_time?: string | null
           transcript?: string | null
@@ -668,7 +776,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_next_retry: {
+        Args: { retry_count: number }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
