@@ -182,29 +182,29 @@ User just said: "${speechResult}"
         input="speech" 
         timeout="10" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Pause length="1"/>
     </Gather>
-    <Say voice="${agent.voice_id || 'alice'}">Thank you for your time. Have a great day!</Say>
+    <Say voice="alice">Thank you for your time. Have a great day!</Say>
     <Hangup/>
 </Response>`;
         } else {
           // Fallback to Twilio TTS
           twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say voice="${agent.voice_id || 'alice'}">${aiMessage.replace(/[<>&"']/g, '')}</Say>
+    <Say voice="alice">${aiMessage.replace(/[<>&"']/g, '')}</Say>
     <Gather 
         input="speech" 
         timeout="10" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Pause length="1"/>
     </Gather>
-    <Say voice="${agent.voice_id || 'alice'}">Thank you for your time. Have a great day!</Say>
+    <Say voice="alice">Thank you for your time. Have a great day!</Say>
     <Hangup/>
 </Response>`;
         }
@@ -220,17 +220,17 @@ User just said: "${speechResult}"
         // Low confidence or no speech detected
         const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say voice="${agent.voice_id || 'alice'}">I didn't catch that. Could you please repeat?</Say>
+    <Say voice="alice">I didn't catch that. Could you please repeat?</Say>
     <Gather 
         input="speech" 
         timeout="8" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Pause length="1"/>
     </Gather>
-    <Say voice="${agent.voice_id || 'alice'}">Thank you for your time. Have a great day!</Say>
+    <Say voice="alice">Thank you for your time. Have a great day!</Say>
     <Hangup/>
 </Response>`;
 
@@ -250,17 +250,17 @@ User just said: "${speechResult}"
 
       const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say voice="${agent.voice_id || 'alice'}">${openingMessage.replace(/[<>&"']/g, '')}</Say>
+    <Say voice="alice">${openingMessage.replace(/[<>&"']/g, '')}</Say>
     <Gather 
         input="speech" 
         timeout="10" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.functions.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
-        <Say voice="${agent.voice_id || 'alice'}">How can I help you today?</Say>
+        <Say voice="alice">How can I help you today?</Say>
     </Gather>
-    <Say voice="${agent.voice_id || 'alice'}">I didn't hear anything. Have a great day!</Say>
+    <Say voice="alice">I didn't hear anything. Have a great day!</Say>
     <Hangup/>
 </Response>`;
 
