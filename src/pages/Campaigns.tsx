@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Plus, BarChart3, Pause, Play, Edit, Users, Phone, TrendingUp, CheckCircle, PhoneCall, Eye } from 'lucide-react';
+import { ArrowLeft, Plus, BarChart3, Pause, Play, Edit, Users, Phone, TrendingUp, CheckCircle, PhoneCall, Eye, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import CampaignBuilder from '@/components/campaigns/CampaignBuilder';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 interface Campaign {
   id: string;
@@ -30,6 +31,7 @@ const Campaigns: React.FC = () => {
   const { toast } = useToast();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingCampaign, setDeletingCampaign] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -160,6 +162,47 @@ const Campaigns: React.FC = () => {
       .eq('id', campaignId);
     
     fetchCampaigns();
+  };
+
+  const deleteCampaign = async (campaignId: string) => {
+    try {
+      setDeletingCampaign(campaignId);
+
+      // First delete all contacts associated with this campaign
+      const { error: contactsError } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('campaign_id', campaignId);
+
+      if (contactsError) {
+        console.error('Error deleting campaign contacts:', contactsError);
+        // Continue with campaign deletion even if contacts deletion fails
+      }
+
+      // Delete the campaign
+      const { error: campaignError } = await supabase
+        .from('campaigns')
+        .delete()
+        .eq('id', campaignId);
+
+      if (campaignError) throw campaignError;
+
+      toast({
+        title: "Campaign deleted",
+        description: "Campaign and all associated contacts have been deleted successfully.",
+      });
+
+      fetchCampaigns();
+    } catch (error) {
+      console.error('Error deleting campaign:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete campaign",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingCampaign(null);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -423,6 +466,42 @@ const Campaigns: React.FC = () => {
                             Edit
                           </Button>
                         </CampaignBuilder>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              disabled={deletingCampaign === campaign.id}
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              {deletingCampaign === campaign.id ? 'Deleting...' : 'Delete'}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Campaign</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{campaign.name}"? This action cannot be undone and will permanently delete:
+                                <ul className="list-disc ml-6 mt-2">
+                                  <li>The campaign and all its settings</li>
+                                  <li>All {campaign.total_contacts || 0} contacts in this campaign</li>
+                                  <li>All call records and analytics data</li>
+                                </ul>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => deleteCampaign(campaign.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                disabled={deletingCampaign === campaign.id}
+                              >
+                                {deletingCampaign === campaign.id ? 'Deleting...' : 'Delete Campaign'}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </CardContent>
