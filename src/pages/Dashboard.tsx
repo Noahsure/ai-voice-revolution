@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 import VoiceTestingPanel from '@/components/VoiceTestingPanel';
 import CallReliabilityMonitor from '@/components/CallReliabilityMonitor';
 import SystemHealthIndicator from '@/components/SystemHealthIndicator';
+import { ManualCallSection } from '@/components/ManualCallSection';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -164,7 +165,7 @@ const Dashboard = () => {
         )}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -212,6 +213,8 @@ const Dashboard = () => {
               </Button>
             </CardContent>
           </Card>
+
+          <ManualCallSection />
         </div>
 
         {/* Secondary Actions */}
