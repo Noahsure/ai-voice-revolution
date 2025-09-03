@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import AIScriptBuilder from './AIScriptBuilder';
 
 interface AgentBuilderProps {
   onClose: () => void;
@@ -106,6 +107,20 @@ const AgentBuilder = ({ onClose }: AgentBuilderProps) => {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAIContentGenerated = (content: string, type: 'opening' | 'system' | 'knowledge') => {
+    switch (type) {
+      case 'opening':
+        updateFormData('opening_message', content);
+        break;
+      case 'system':
+        updateFormData('system_prompt', content);
+        break;
+      case 'knowledge':
+        updateFormData('knowledge_base', content);
+        break;
     }
   };
 
@@ -348,8 +363,21 @@ const AgentBuilder = ({ onClose }: AgentBuilderProps) => {
       case 4:
         return (
           <div className="space-y-6">
+            {/* AI Script Builder Section */}
+            <AIScriptBuilder onContentGenerated={handleAIContentGenerated} />
+            
+            {/* Separator */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or customize manually</span>
+              </div>
+            </div>
+
             <div>
-              <h3 className="text-xl font-semibold mb-4">Script & Knowledge</h3>
+              <h3 className="text-xl font-semibold mb-4">Manual Script & Knowledge Entry</h3>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="opening_message">Opening Message</Label>

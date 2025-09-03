@@ -9,6 +9,9 @@ verify_jwt = false
 [functions.ai-conversation-handler]
 verify_jwt = false
 
+[functions.ai-script-generator]
+verify_jwt = true
+
 [functions.speech-to-text]
 verify_jwt = true
 
