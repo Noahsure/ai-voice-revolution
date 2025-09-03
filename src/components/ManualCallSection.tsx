@@ -92,7 +92,10 @@ export const ManualCallSection = () => {
   };
 
   const handleMakeCall = async () => {
+    console.log('🔥 handleMakeCall started', { selectedAgent, phoneNumber, user: user?.id });
+    
     if (!selectedAgent) {
+      console.log('❌ No agent selected');
       toast({
         title: "Agent Required",
         description: "Please select an AI agent",
@@ -102,6 +105,7 @@ export const ManualCallSection = () => {
     }
 
     if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
+      console.log('❌ Invalid phone number', { phoneNumber, valid: validatePhoneNumber(phoneNumber) });
       toast({
         title: "Invalid Phone Number",
         description: "Please enter a valid phone number (7-15 digits)",
@@ -110,9 +114,11 @@ export const ManualCallSection = () => {
       return;
     }
 
+    console.log('✅ Validation passed, starting call process');
     setLoading(true);
 
     try {
+      console.log('📞 Creating temporary contact...');
       // Create a temporary contact for this manual call
       const { data: contact, error: contactError } = await supabase
         .from('contacts')
@@ -126,9 +132,15 @@ export const ManualCallSection = () => {
         .select()
         .single();
 
-      if (contactError) throw contactError;
+      if (contactError) {
+        console.log('❌ Contact creation failed:', contactError);
+        throw contactError;
+      }
+      
+      console.log('✅ Contact created:', contact.id);
 
       // Initiate the call
+      console.log('🚀 Calling initiate-outbound-call function...');
       const { data, error } = await supabase.functions.invoke('initiate-outbound-call', {
         body: {
           campaignId: null,
@@ -139,6 +151,7 @@ export const ManualCallSection = () => {
         }
       });
 
+      console.log('📡 Function response:', { data, error });
       if (error) throw error;
 
       toast({
