@@ -172,7 +172,6 @@ serve(async (req) => {
         agent_id: agentId,
         phone_number: (contact && contact.phone_number) ? contact.phone_number : phoneNumber,
         call_direction: 'outbound',
-        call_status: 'queued',
         retry_count: 0
       })
       .select()

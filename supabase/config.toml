@@ -45,3 +45,6 @@ verify_jwt = false
 
 [functions.call-error-recovery]
 verify_jwt = false
+
+[functions.test-call-components]
+verify_jwt = false
