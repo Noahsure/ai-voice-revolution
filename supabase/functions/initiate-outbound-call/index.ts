@@ -96,7 +96,7 @@ serve(async (req) => {
     const { campaignId, contactId, agentId, phoneNumber }: CallRequest = await req.json();
 
     // Input validation
-    if (!campaignId || !contactId || !agentId || !phoneNumber) {
+    if (!contactId || !agentId || !phoneNumber) {
       throw new Error('Missing required parameters');
     }
 
