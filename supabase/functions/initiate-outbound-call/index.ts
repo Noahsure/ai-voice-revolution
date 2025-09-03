@@ -152,15 +152,19 @@ serve(async (req) => {
       throw new Error('Agent not found');
     }
 
-    // Get user's phone number from profile
+    // Get user's profile with Twilio credentials and phone number
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('phone_number')
+      .select('phone_number, twilio_account_sid, twilio_auth_token')
       .eq('user_id', userId)
       .single();
 
     if (profileError || !profile?.phone_number) {
       throw new Error('User phone number not configured in profile');
+    }
+
+    if (!profile.twilio_account_sid || !profile.twilio_auth_token) {
+      throw new Error('Twilio credentials not configured in user profile');
     }
 
     // Create call record with proper state management
@@ -247,13 +251,9 @@ serve(async (req) => {
     }
 
     if (isManualCall || !queueOk) {
-      // Fallback to direct Twilio call
-      const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
-      const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
-
-      if (!twilioAccountSid || !twilioAuthToken) {
-        throw new Error('Twilio credentials not configured');
-      }
+      // Use Twilio credentials from user's profile
+      const twilioAccountSid = profile.twilio_account_sid;
+      const twilioAuthToken = profile.twilio_auth_token;
 
       // Prepare TwiML for AI conversation handling
       const twimlUrl = (useSimpleTwiml)
