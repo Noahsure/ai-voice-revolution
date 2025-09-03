@@ -185,16 +185,16 @@ const AgentBuilder = ({ onClose }: AgentBuilderProps) => {
                 <div>
                   <Label htmlFor="purpose">Purpose</Label>
                   <Select value={formData.purpose} onValueChange={(value) => updateFormData('purpose', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select agent purpose" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sales">Sales</SelectItem>
-                      <SelectItem value="support">Support</SelectItem>
-                      <SelectItem value="appointment">Appointment</SelectItem>
-                      <SelectItem value="survey">Survey</SelectItem>
-                      <SelectItem value="collection">Collection</SelectItem>
-                      <SelectItem value="qualification">Qualification</SelectItem>
+                    <SelectContent className="z-50 bg-background border shadow-lg">
+                      <SelectItem value="sales" className="cursor-pointer px-3 py-2 hover:bg-accent">Sales Specialist</SelectItem>
+                      <SelectItem value="support" className="cursor-pointer px-3 py-2 hover:bg-accent">Customer Support</SelectItem>
+                      <SelectItem value="appointment" className="cursor-pointer px-3 py-2 hover:bg-accent">Appointment Booking</SelectItem>
+                      <SelectItem value="survey" className="cursor-pointer px-3 py-2 hover:bg-accent">Survey & Research</SelectItem>
+                      <SelectItem value="collection" className="cursor-pointer px-3 py-2 hover:bg-accent">Debt Collection</SelectItem>
+                      <SelectItem value="qualification" className="cursor-pointer px-3 py-2 hover:bg-accent">Lead Qualification</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -202,15 +202,15 @@ const AgentBuilder = ({ onClose }: AgentBuilderProps) => {
                 <div>
                   <Label htmlFor="language">Language</Label>
                   <Select value={formData.language} onValueChange={(value) => updateFormData('language', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en-US">English (US)</SelectItem>
-                      <SelectItem value="en-GB">English (UK)</SelectItem>
-                      <SelectItem value="es-ES">Spanish</SelectItem>
-                      <SelectItem value="fr-FR">French</SelectItem>
-                      <SelectItem value="de-DE">German</SelectItem>
+                    <SelectContent className="z-50 bg-background border shadow-lg">
+                      <SelectItem value="en-US" className="cursor-pointer px-3 py-2 hover:bg-accent">English (US)</SelectItem>
+                      <SelectItem value="en-GB" className="cursor-pointer px-3 py-2 hover:bg-accent">English (UK)</SelectItem>
+                      <SelectItem value="es-ES" className="cursor-pointer px-3 py-2 hover:bg-accent">Spanish</SelectItem>
+                      <SelectItem value="fr-FR" className="cursor-pointer px-3 py-2 hover:bg-accent">French</SelectItem>
+                      <SelectItem value="de-DE" className="cursor-pointer px-3 py-2 hover:bg-accent">German</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
