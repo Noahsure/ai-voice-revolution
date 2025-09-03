@@ -169,7 +169,7 @@ User just said: "${speechResult}"
           .eq('id', callRecordId);
 
         // Try to use ElevenLabs for better voice quality
-        const audioBase64 = await generateSpeechAudio(aiMessage, agent.voice_id || '9BWtsMINqrJLrRacOk9x');
+        const audioBase64 = null; // Disabled: Twilio does not support data: URLs in <Play>
 
         let twiml: string;
 
