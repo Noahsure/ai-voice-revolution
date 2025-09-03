@@ -134,7 +134,8 @@ export const ManualCallSection = () => {
           campaignId: null,
           contactId: contact.id,
           agentId: selectedAgent,
-          phoneNumber: phoneNumber.replace(/\D/g, '')
+          phoneNumber: phoneNumber.replace(/\D/g, ''),
+          useSimpleTwiml: true // Debug: route via simple TwiML to isolate AI handler issues
         }
       });
 
