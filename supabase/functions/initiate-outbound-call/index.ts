@@ -96,14 +96,17 @@ serve(async (req) => {
     const { campaignId, contactId, agentId, phoneNumber }: CallRequest = await req.json();
 
     // Input validation
-    if (!contactId || !agentId || !phoneNumber) {
-      throw new Error('Missing required parameters');
+    if (!agentId || !phoneNumber) {
+      throw new Error('Missing required parameters: agentId and phoneNumber are required');
     }
 
     // Initialize Supabase client
-    const supabaseUrl = "https://xmpjqtvznswcdfwtrvpc.supabase.co";
-    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtcGpxdHZ6bnN3Y2Rmd3RydnBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NDE3MjQsImV4cCI6MjA3MjMxNzcyNH0.fkDoqP1b8UusCA0rHzcvi7KmkzoGrbcHjv3loVZRbBo";
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || "https://xmpjqtvznswcdfwtrvpc.supabase.co";
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseServiceRoleKey) {
+      throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY');
+    }
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     // Get authorization header and validate user
     const authHeader = req.headers.get('authorization')?.replace('Bearer ', '');
@@ -121,15 +124,21 @@ serve(async (req) => {
     await checkForStuckCalls(supabase, userId);
 
     // Get contact details
-    const { data: contact, error: contactError } = await supabase
-      .from('contacts')
-      .select('*')
-      .eq('id', contactId)
-      .single();
+    let contact: any = null;
+    if (contactId) {
+      const { data: contactData, error: contactError } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('id', contactId)
+        .maybeSingle();
 
-    if (contactError || !contact) {
-      throw new Error('Contact not found');
+      if (contactError) {
+        console.error('Error fetching contact:', contactError);
+      }
+      contact = contactData;
     }
+
+    // If no contact found, we'll fallback to the provided phoneNumber for manual dialing
 
     // Get agent details for voice configuration
     const { data: agent, error: agentError } = await supabase
@@ -158,10 +167,10 @@ serve(async (req) => {
       .from('call_records')
       .insert({
         user_id: userId,
-        contact_id: contactId,
-        campaign_id: campaignId,
+        contact_id: contactId || null,
+        campaign_id: campaignId || null,
         agent_id: agentId,
-        phone_number: contact.phone_number,
+        phone_number: (contact && contact.phone_number) ? contact.phone_number : phoneNumber,
         call_direction: 'outbound',
         call_status: 'queued',
         retry_count: 0
@@ -173,22 +182,27 @@ serve(async (req) => {
       throw new Error(`Failed to create call record: ${callError.message}`);
     }
 
-    // Add to call queue for reliable processing
-    const { error: queueError } = await supabase
-      .from('call_queue')
-      .insert({
-        user_id: userId,
-        campaign_id: campaignId,
-        contact_id: contactId,
-        agent_id: agentId,
-        priority: 5, // Default priority
-        scheduled_at: new Date().toISOString(),
-        status: 'pending'
-      });
+    // Add to call queue for campaign calls only
+    let queued = false;
+    if (campaignId) {
+      const { error: queueError } = await supabase
+        .from('call_queue')
+        .insert({
+          user_id: userId,
+          campaign_id: campaignId,
+          contact_id: contactId || null,
+          agent_id: agentId,
+          priority: 5, // Default priority
+          scheduled_at: new Date().toISOString(),
+          status: 'pending'
+        });
 
-    if (queueError) {
-      console.error('Error adding to call queue:', queueError);
-      // Continue with direct call even if queue fails
+      if (queueError) {
+        console.error('Error adding to call queue:', queueError);
+        // Will fallback to direct call below
+      } else {
+        queued = true;
+      }
     }
 
     // Initialize call monitoring
@@ -203,24 +217,36 @@ serve(async (req) => {
 
     console.log(`Call record created: ${callRecord.id}, queued for processing`);
 
-    // For immediate processing, trigger the queue manager
-    const queueManagerResponse = await fetch(`${supabaseUrl}/functions/v1/campaign-queue-manager`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        processSpecific: {
-          userId,
-          campaignId,
-          contactId
-        }
-      })
-    });
+    // For manual calls, or if queue manager fails, initiate a direct Twilio call
+    const isManualCall = !campaignId;
 
-    if (!queueManagerResponse.ok) {
-      console.error('Queue manager trigger failed, proceeding with direct call');
-      
+    let queueOk = false;
+    if (!isManualCall && queued) {
+      // For campaign calls, try to trigger the queue manager
+      try {
+        const queueManagerResponse = await fetch(`${supabaseUrl}/functions/v1/campaign-queue-manager`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            processSpecific: {
+              userId,
+              campaignId,
+              contactId
+            }
+          })
+        });
+        queueOk = queueManagerResponse.ok;
+        if (!queueOk) {
+          console.error('Queue manager trigger failed, will attempt direct call');
+        }
+      } catch (e) {
+        console.error('Queue manager trigger error:', e);
+      }
+    }
+
+    if (isManualCall || !queueOk) {
       // Fallback to direct Twilio call
       const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
       const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN');
@@ -237,8 +263,10 @@ serve(async (req) => {
       const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioAccountSid}/Calls.json`;
       const twilioAuth = btoa(`${twilioAccountSid}:${twilioAuthToken}`);
 
+      const toNumber = (contact && contact.phone_number) ? contact.phone_number : phoneNumber;
+
       const callParams = new URLSearchParams({
-        To: contact.phone_number,
+        To: toNumber,
         From: profile.phone_number,
         Url: twimlUrl,
         StatusCallback: statusCallbackUrl,
@@ -250,7 +278,7 @@ serve(async (req) => {
 
       try {
         const callData = await initiateTwilioCallWithRetry(twilioUrl, twilioAuth, callParams);
-        
+
         // Update call record with Twilio SID
         await supabase
           .from('call_records')
@@ -280,7 +308,7 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
 
-      } catch (twilioError) {
+      } catch (twilioError: any) {
         // Mark call as failed with error details
         await supabase
           .from('call_records')
@@ -291,11 +319,12 @@ serve(async (req) => {
             last_error_at: new Date().toISOString()
           })
           .eq('id', callRecord.id);
-        
+
         throw twilioError;
       }
     }
 
+    // If we reached here, the call was queued for processing
     return new Response(JSON.stringify({
       success: true,
       callRecordId: callRecord.id,
@@ -310,7 +339,9 @@ serve(async (req) => {
     console.error('Error initiating call:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: error.message
+      error: error.message,
+      timestamp: new Date().toISOString(),
+      details: (error as any)?.stack || null
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
