@@ -68,11 +68,16 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get agent configuration and ensure proper sync
-    const { data: agent } = await supabase
+    const { data: agent, error: agentError } = await supabase
       .from('ai_agents')
       .select('*')
       .eq('id', agentId)
       .single();
+
+    if (agentError) {
+      console.error('Agent query error:', agentError);
+      throw new Error(`Agent query failed: ${agentError.message}`);
+    }
 
     if (!agent) {
       console.error(`Agent not found for ID: ${agentId}`);
@@ -82,11 +87,16 @@ serve(async (req) => {
     console.log(`✅ Agent ${agent.name} (${agent.id}) successfully synced to call ${callRecordId}`);
 
     // Get call record and contact information
-    const { data: callRecord } = await supabase
+    const { data: callRecord, error: callError } = await supabase
       .from('call_records')
       .select('*, contacts (*)')
       .eq('id', callRecordId)
       .single();
+
+    if (callError) {
+      console.error('Call record query error:', callError);
+      console.log('Continuing without call record data...');
+    }
 
     const contact = callRecord?.contacts;
 
@@ -274,16 +284,21 @@ User just said: "${speechResult}"
 
   } catch (error) {
     console.error('AI conversation handler error:', error);
+    console.error('Error details:', {
+      message: error?.message,
+      stack: error?.stack,
+      name: error?.name
+    });
     
-    // Return error TwiML
+    // ALWAYS return valid TwiML even on complete failure
     const errorTwiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say voice="alice">Sorry, we're experiencing technical difficulties. Please try again later.</Say>
+    <Say voice="alice">I apologize, but I'm experiencing technical difficulties right now. Please try calling back in a few minutes. Thank you for your patience.</Say>
     <Hangup/>
 </Response>`;
 
     return new Response(errorTwiml, {
-      status: 500,
+      status: 200,  // Important: Return 200 so Twilio processes the TwiML
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'text/xml'

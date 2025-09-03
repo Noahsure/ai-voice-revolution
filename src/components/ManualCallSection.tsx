@@ -135,7 +135,7 @@ export const ManualCallSection = () => {
           contactId: contact.id,
           agentId: selectedAgent,
           phoneNumber: phoneNumber.replace(/\D/g, ''),
-          useSimpleTwiml: true // Debug: route via simple TwiML to isolate AI handler issues
+          useSimpleTwiml: false // Re-enable AI conversation handler now that it's fixed
         }
       });
 
