@@ -55,14 +55,29 @@ export const ManualCallSection = () => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
     
-    // Format as (XXX) XXX-XXXX
-    if (digits.length >= 6) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
-    } else if (digits.length >= 3) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-    } else {
-      return digits;
+    // Handle UK numbers (11 digits starting with 44 or just 11 digits)
+    if (digits.length === 11 && (digits.startsWith('44') || digits.startsWith('07') || digits.startsWith('01') || digits.startsWith('02'))) {
+      // UK format: +44 XXXX XXX XXX or 0XXXX XXX XXX
+      if (digits.startsWith('44')) {
+        return `+${digits.slice(0, 2)} ${digits.slice(2, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`;
+      } else {
+        return `${digits.slice(0, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+      }
     }
+    // US format: (XXX) XXX-XXXX
+    else if (digits.length >= 6 && digits.length <= 10) {
+      if (digits.length >= 6) {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+      } else if (digits.length >= 3) {
+        return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      }
+    }
+    // International format: just return digits with + if it starts with country code
+    else if (digits.length > 11) {
+      return `+${digits}`;
+    }
+    
+    return digits;
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +87,8 @@ export const ManualCallSection = () => {
 
   const validatePhoneNumber = (phone: string) => {
     const digits = phone.replace(/\D/g, '');
-    return digits.length === 10;
+    // Accept US (10 digits), UK (11 digits), or international (7-15 digits)
+    return digits.length >= 7 && digits.length <= 15;
   };
 
   const handleMakeCall = async () => {
@@ -88,7 +104,7 @@ export const ManualCallSection = () => {
     if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
       toast({
         title: "Invalid Phone Number",
-        description: "Please enter a valid 10-digit phone number",
+        description: "Please enter a valid phone number (7-15 digits)",
         variant: "destructive",
       });
       return;
@@ -163,15 +179,22 @@ export const ManualCallSection = () => {
             <SelectTrigger>
               <SelectValue placeholder={fetchingAgents ? "Loading agents..." : "Choose an agent"} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-80">
               {agents.map((agent) => (
-                <SelectItem key={agent.id} value={agent.id}>
-                  <div className="flex items-center gap-2">
-                    <Bot className="w-4 h-4" />
-                    <div>
-                      <div className="font-medium">{agent.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {agent.purpose} • {agent.type}
+                <SelectItem key={agent.id} value={agent.id} className="py-3">
+                  <div className="flex items-start gap-3 w-full">
+                    <div className="p-1 rounded-md bg-accent/20 mt-0.5">
+                      <Bot className="w-4 h-4 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm truncate">{agent.name}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                        {agent.purpose}
+                      </div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                          {agent.type}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -186,11 +209,15 @@ export const ManualCallSection = () => {
           <Input
             id="phone-input"
             type="tel"
-            placeholder="(555) 123-4567"
+            placeholder="UK: 07XXX XXX XXX or US: (555) 123-4567"
             value={phoneNumber}
             onChange={handlePhoneChange}
-            maxLength={14}
+            maxLength={20}
+            className="font-mono"
           />
+          <p className="text-xs text-muted-foreground">
+            Supports UK (+44), US, and international formats
+          </p>
         </div>
 
         <Button 
