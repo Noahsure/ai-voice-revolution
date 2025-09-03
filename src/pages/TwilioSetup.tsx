@@ -36,7 +36,7 @@ const TwilioSetup = () => {
         .from('profiles')
         .select('twilio_account_sid, twilio_auth_token, phone_number')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profile) {
         setCredentials({
@@ -64,17 +64,41 @@ const TwilioSetup = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
+      // Ensure single profile per user: update if exists, else insert
+      const { data: existing, error: fetchErr } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          twilio_account_sid: credentials.accountSid,
-          twilio_auth_token: credentials.authToken,
-          phone_number: credentials.phoneNumber,
-          updated_at: new Date().toISOString()
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (fetchErr) throw fetchErr;
 
-      if (error) throw error;
+      let opError: any = null;
+      if (existing?.id) {
+        const { error: updateErr } = await supabase
+          .from('profiles')
+          .update({
+            twilio_account_sid: credentials.accountSid,
+            twilio_auth_token: credentials.authToken,
+            phone_number: credentials.phoneNumber,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existing.id);
+        opError = updateErr;
+      } else {
+        const { error: insertErr } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            twilio_account_sid: credentials.accountSid,
+            twilio_auth_token: credentials.authToken,
+            phone_number: credentials.phoneNumber
+          });
+        opError = insertErr;
+      }
+
+      if (opError) throw opError;
+
+      
 
       setIsConnected(true);
       toast({
@@ -85,7 +109,7 @@ const TwilioSetup = () => {
       console.error('Error saving credentials:', error);
       toast({
         title: "Error",
-        description: "Failed to save credentials. Please try again.",
+        description: (error as any)?.message ? String((error as any).message) : "Failed to save credentials. Please try again.",
         variant: "destructive"
       });
     } finally {
