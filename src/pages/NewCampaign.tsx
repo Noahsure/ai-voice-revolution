@@ -5,12 +5,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Users, Phone, ArrowLeft, Volume2, CheckCircle } from 'lucide-react';
+import { Upload, Users, Phone, ArrowLeft, Volume2, CheckCircle, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';
+import AgentBuilder from '@/components/agents/AgentBuilder';
 
 interface Agent {
   id: string;
@@ -41,6 +42,7 @@ const NewCampaign = () => {
   
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showAgentBuilder, setShowAgentBuilder] = useState(false);
 
   useEffect(() => {
     fetchAgents();
@@ -249,6 +251,11 @@ const NewCampaign = () => {
 
   const prevStep = () => setStep(step - 1);
 
+  const handleAgentCreated = () => {
+    setShowAgentBuilder(false);
+    fetchAgents(); // Refresh agents list
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
@@ -335,6 +342,22 @@ const NewCampaign = () => {
                   <p className="text-muted-foreground">Choose the AI agent that will handle your campaign calls</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">
+                  {/* Create New Agent Card */}
+                  <Card 
+                    className="cursor-pointer transition-all hover:shadow-lg border-2 border-dashed border-primary/30 hover:border-primary/50"
+                    onClick={() => setShowAgentBuilder(true)}
+                  >
+                    <CardContent className="p-4 flex flex-col items-center justify-center text-center min-h-[200px]">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                        <Plus className="w-6 h-6 text-primary" />
+                      </div>
+                      <h4 className="font-bold text-lg mb-2">Create New Agent</h4>
+                      <p className="text-muted-foreground text-sm">
+                        Build a custom AI agent tailored to your specific needs
+                      </p>
+                    </CardContent>
+                  </Card>
+
                   {agents.map((agent) => (
                     <Card 
                       key={agent.id} 
@@ -491,6 +514,11 @@ const NewCampaign = () => {
           )}
         </div>
       </div>
+
+      {/* Agent Builder Modal */}
+      {showAgentBuilder && (
+        <AgentBuilder onClose={handleAgentCreated} />
+      )}
     </div>
   );
 };
