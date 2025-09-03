@@ -131,9 +131,7 @@ async function processUserQueue(supabase: any, userId: string) {
       .from('call_queue')
       .select(`
         *,
-        campaigns!inner(*),
-        contacts!inner(*),
-        ai_agents!inner(*)
+        contacts!inner(phone_number, first_name, last_name)
       `)
       .eq('user_id', userId)
       .eq('status', 'pending')
@@ -186,8 +184,14 @@ async function processQueueEntry(supabase: any, entry: any) {
       })
       .eq('id', entry.id);
 
-    // Validate that campaign and agent are still active
-    if (entry.campaigns?.status !== 'active') {
+    // Validate that campaign is still active
+    const { data: campaign } = await supabase
+      .from('campaigns')
+      .select('status')
+      .eq('id', entry.campaign_id)
+      .single();
+
+    if (!campaign || campaign.status !== 'active') {
       await supabase
         .from('call_queue')
         .update({
@@ -200,7 +204,14 @@ async function processQueueEntry(supabase: any, entry: any) {
       return { queueId: entry.id, status: 'failed', reason: 'inactive_campaign' };
     }
 
-    if (!entry.ai_agents?.is_active) {
+    // Validate that agent is still active
+    const { data: agent } = await supabase
+      .from('ai_agents')
+      .select('is_active')
+      .eq('id', entry.agent_id)
+      .single();
+
+    if (!agent || !agent.is_active) {
       await supabase
         .from('call_queue')
         .update({
