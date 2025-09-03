@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import TwilioSetup from "./pages/TwilioSetup";
 import Campaigns from "./pages/Campaigns";
+import NewCampaign from "./pages/NewCampaign";
 import Agents from "./pages/Agents";
 import Contacts from "./pages/Contacts";
 import LiveMonitoring from "./pages/LiveMonitoring";
@@ -52,6 +53,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Campaigns />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/campaigns/new" 
+              element={
+                <ProtectedRoute>
+                  <NewCampaign />
                 </ProtectedRoute>
               } 
             />
