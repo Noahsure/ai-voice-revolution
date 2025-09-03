@@ -5,16 +5,17 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, Search, Download, Plus, Phone, Mail, Building, FileText, Trash2, Filter } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import Papa from 'papaparse';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { normalizePhoneNumber, validateE164PhoneNumber, COUNTRY_CODES } from "@/lib/phoneUtils";
 
 interface Contact {
   id: string;
@@ -51,6 +52,8 @@ const Contacts = () => {
   const [csvPreview, setCsvPreview] = useState<any[]>([]);
   const [showColumnMapping, setShowColumnMapping] = useState(false);
   const [columnMapping, setColumnMapping] = useState<{[key: string]: string}>({});
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('+44');
 
   useEffect(() => {
     if (user) {
@@ -118,21 +121,24 @@ const Contacts = () => {
         setCsvData(results.data);
         setCsvPreview(results.data.slice(0, 10));
         
-        // Auto-detect column mappings
+        // Capture all headers
         const headers = Object.keys(results.data[0] || {});
+        setCsvHeaders(headers);
+        
+        // Auto-detect column mappings
         const mapping: {[key: string]: string} = {};
         
         headers.forEach(header => {
           const lowerHeader = header.toLowerCase();
-          if (lowerHeader.includes('phone') || lowerHeader.includes('number')) {
+          if (lowerHeader.includes('phone') || lowerHeader.includes('number') || lowerHeader.includes('mobile')) {
             mapping['phone_number'] = header;
-          } else if (lowerHeader.includes('first') || lowerHeader.includes('fname')) {
+          } else if (lowerHeader.includes('first') || lowerHeader.includes('fname') || lowerHeader === 'name') {
             mapping['first_name'] = header;
-          } else if (lowerHeader.includes('last') || lowerHeader.includes('lname')) {
+          } else if (lowerHeader.includes('last') || lowerHeader.includes('lname') || lowerHeader.includes('surname')) {
             mapping['last_name'] = header;
           } else if (lowerHeader.includes('email') || lowerHeader.includes('mail')) {
             mapping['email'] = header;
-          } else if (lowerHeader.includes('company') || lowerHeader.includes('business')) {
+          } else if (lowerHeader.includes('company') || lowerHeader.includes('business') || lowerHeader.includes('organization')) {
             mapping['company'] = header;
           }
         });
@@ -159,15 +165,40 @@ const Contacts = () => {
     try {
       setUploading(true);
       
-      const contactsToInsert = csvData.map((row: any) => ({
-        user_id: user?.id,
-        campaign_id: selectedCampaign,
-        phone_number: row[columnMapping.phone_number] || '',
-        first_name: columnMapping.first_name && columnMapping.first_name !== 'none' ? row[columnMapping.first_name] : null,
-        last_name: columnMapping.last_name && columnMapping.last_name !== 'none' ? row[columnMapping.last_name] : null,
-        email: columnMapping.email && columnMapping.email !== 'none' ? row[columnMapping.email] : null,
-        company: columnMapping.company && columnMapping.company !== 'none' ? row[columnMapping.company] : null,
-      })).filter(contact => contact.phone_number); // Filter out contacts without phone numbers
+      // Normalize phone numbers and collect custom fields
+      const contactsToInsert = csvData.map((row: any) => {
+        const phoneNumber = row[columnMapping.phone_number] || '';
+        const normalizedPhone = phoneNumber ? normalizePhoneNumber(phoneNumber, selectedCountry) : '';
+        
+        // Collect custom fields (all unmapped columns)
+        const customFields: any = {};
+        csvHeaders.forEach(header => {
+          if (!Object.values(columnMapping).includes(header) && row[header]) {
+            customFields[header] = row[header];
+          }
+        });
+
+        return {
+          user_id: user?.id,
+          campaign_id: selectedCampaign,
+          phone_number: normalizedPhone,
+          first_name: columnMapping.first_name && columnMapping.first_name !== 'none' ? row[columnMapping.first_name] : null,
+          last_name: columnMapping.last_name && columnMapping.last_name !== 'none' ? row[columnMapping.last_name] : null,
+          email: columnMapping.email && columnMapping.email !== 'none' ? row[columnMapping.email] : null,
+          company: columnMapping.company && columnMapping.company !== 'none' ? row[columnMapping.company] : null,
+          custom_fields: Object.keys(customFields).length > 0 ? customFields : {},
+        };
+      }).filter(contact => contact.phone_number && validateE164PhoneNumber(contact.phone_number));
+
+      if (contactsToInsert.length === 0) {
+        toast({
+          title: "Error",
+          description: "No valid phone numbers found. Please check your data and country selection.",
+          variant: "destructive",
+        });
+        setUploading(false);
+        return;
+      }
 
       const { error } = await supabase
         .from('contacts')
@@ -175,14 +206,18 @@ const Contacts = () => {
 
       if (error) throw error;
 
+      const invalidCount = csvData.length - contactsToInsert.length;
+      const successMessage = `Imported ${contactsToInsert.length} contacts${invalidCount > 0 ? ` (${invalidCount} skipped due to invalid phone numbers)` : ''}`;
+
       toast({
         title: "Success",
-        description: `Imported ${contactsToInsert.length} contacts`,
+        description: successMessage,
       });
 
       setShowColumnMapping(false);
       setCsvData([]);
       setCsvPreview([]);
+      setCsvHeaders([]);
       fetchContacts();
     } catch (error) {
       console.error('Error importing contacts:', error);
@@ -513,137 +548,140 @@ const Contacts = () => {
       {/* Column Mapping Dialog */}
       <Dialog open={showColumnMapping} onOpenChange={setShowColumnMapping}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Map CSV Columns</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Review the column mapping and adjust if needed. Preview shows the first 10 rows.
-            </p>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone-mapping">Phone Number</Label>
-                <Select value={columnMapping.phone_number || ''} onValueChange={(value) => 
-                  setColumnMapping(prev => ({ ...prev, phone_number: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select column" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
-                      <SelectItem key={header} value={header}>{header}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                      <DialogHeader>
+                        <DialogTitle>Map CSV Columns</DialogTitle>
+                        <DialogDescription>
+                          Map your CSV columns to contact fields. Unmapped columns will be stored as custom fields.
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium">Country for Phone Numbers</label>
+                          <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {COUNTRY_CODES.map(country => (
+                                <SelectItem key={country.code} value={country.prefix}>
+                                  {country.prefix} - {country.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
 
-              <div>
-                <Label htmlFor="first-name-mapping">First Name (Optional)</Label>
-                <Select value={columnMapping.first_name || ''} onValueChange={(value) => 
-                  setColumnMapping(prev => ({ ...prev, first_name: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select column" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
-                      <SelectItem key={header} value={header}>{header}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-sm font-medium">Phone Number *</label>
+                            <Select
+                              value={columnMapping.phone_number || ''}
+                              onValueChange={(value) => setColumnMapping(prev => ({...prev, phone_number: value}))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select column" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {csvHeaders.map(header => (
+                                  <SelectItem key={header} value={header}>{header}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <label className="text-sm font-medium">First Name</label>
+                            <Select
+                              value={columnMapping.first_name || 'none'}
+                              onValueChange={(value) => setColumnMapping(prev => ({...prev, first_name: value}))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select column" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Skip this field</SelectItem>
+                                {csvHeaders.map(header => (
+                                  <SelectItem key={header} value={header}>{header}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <label className="text-sm font-medium">Last Name</label>
+                            <Select
+                              value={columnMapping.last_name || 'none'}
+                              onValueChange={(value) => setColumnMapping(prev => ({...prev, last_name: value}))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select column" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Skip this field</SelectItem>
+                                {csvHeaders.map(header => (
+                                  <SelectItem key={header} value={header}>{header}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <label className="text-sm font-medium">Email</label>
+                            <Select
+                              value={columnMapping.email || 'none'}
+                              onValueChange={(value) => setColumnMapping(prev => ({...prev, email: value}))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select column" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Skip this field</SelectItem>
+                                {csvHeaders.map(header => (
+                                  <SelectItem key={header} value={header}>{header}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <label className="text-sm font-medium">Company</label>
+                            <Select
+                              value={columnMapping.company || 'none'}
+                              onValueChange={(value) => setColumnMapping(prev => ({...prev, company: value}))}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select column" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Skip this field</SelectItem>
+                                {csvHeaders.map(header => (
+                                  <SelectItem key={header} value={header}>{header}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
 
-              <div>
-                <Label htmlFor="last-name-mapping">Last Name (Optional)</Label>
-                <Select value={columnMapping.last_name || ''} onValueChange={(value) => 
-                  setColumnMapping(prev => ({ ...prev, last_name: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select column" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
-                      <SelectItem key={header} value={header}>{header}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="email-mapping">Email (Optional)</Label>
-                <Select value={columnMapping.email || ''} onValueChange={(value) => 
-                  setColumnMapping(prev => ({ ...prev, email: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select column" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
-                      <SelectItem key={header} value={header}>{header}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="col-span-2">
-                <Label htmlFor="company-mapping">Company (Optional)</Label>
-                <Select value={columnMapping.company || ''} onValueChange={(value) => 
-                  setColumnMapping(prev => ({ ...prev, company: value }))
-                }>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select column" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
-                      <SelectItem key={header} value={header}>{header}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {csvPreview.length > 0 && (
-              <div>
-                <Label>Preview (First 10 rows)</Label>
-                <div className="mt-2 rounded-md border overflow-auto max-h-64">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {Object.keys(csvPreview[0]).map((header) => (
-                          <TableHead key={header}>{header}</TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {csvPreview.map((row, index) => (
-                        <TableRow key={index}>
-                          {Object.values(row).map((value: any, cellIndex) => (
-                            <TableCell key={cellIndex}>{value}</TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowColumnMapping(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={importContacts} 
-                disabled={!columnMapping.phone_number || uploading}
-              >
-                {uploading ? 'Importing...' : `Import ${csvData.length} Contacts`}
-              </Button>
-            </div>
+                        <div className="pt-2">
+                          <p className="text-sm text-muted-foreground">
+                            Unmapped columns: {csvHeaders.filter(h => !Object.values(columnMapping).includes(h)).join(', ') || 'None'}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            These will be stored as custom fields and can be used in your campaigns.
+                          </p>
+                        </div>
+                      </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setShowColumnMapping(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={importContacts} 
+              disabled={!columnMapping.phone_number || uploading}
+            >
+              {uploading ? 'Importing...' : `Import ${csvData.length} Contacts`}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

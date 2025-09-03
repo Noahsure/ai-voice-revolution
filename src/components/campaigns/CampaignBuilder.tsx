@@ -10,9 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Upload, Plus, Users, Phone, Play, Volume2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import Papa from 'papaparse';
+import { normalizePhoneNumber, validateE164PhoneNumber, COUNTRY_CODES } from "@/lib/phoneUtils";
 
 interface Agent {
   id: string;
@@ -54,6 +55,8 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
   const [contacts, setContacts] = useState<any[]>([]);
   const [csvData, setCsvData] = useState<any[]>([]);
   const [columnMapping, setColumnMapping] = useState<{[key: string]: string}>({});
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('+44');
   
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -102,42 +105,60 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
       complete: (results) => {
         setCsvData(results.data);
         
-        // Auto-detect column mappings
+        // Capture all headers
         const headers = Object.keys(results.data[0] || {});
+        setCsvHeaders(headers);
+        
+        // Auto-detect column mappings
         const mapping: {[key: string]: string} = {};
         
         headers.forEach(header => {
           const lowerHeader = header.toLowerCase();
-          if (lowerHeader.includes('phone') || lowerHeader.includes('number')) {
+          if (lowerHeader.includes('phone') || lowerHeader.includes('number') || lowerHeader.includes('mobile')) {
             mapping['phone_number'] = header;
-          } else if (lowerHeader.includes('first') || lowerHeader.includes('fname')) {
+          } else if (lowerHeader.includes('first') || lowerHeader.includes('fname') || lowerHeader === 'name') {
             mapping['first_name'] = header;
-          } else if (lowerHeader.includes('last') || lowerHeader.includes('lname')) {
+          } else if (lowerHeader.includes('last') || lowerHeader.includes('lname') || lowerHeader.includes('surname')) {
             mapping['last_name'] = header;
           } else if (lowerHeader.includes('email') || lowerHeader.includes('mail')) {
             mapping['email'] = header;
-          } else if (lowerHeader.includes('company') || lowerHeader.includes('business')) {
+          } else if (lowerHeader.includes('company') || lowerHeader.includes('business') || lowerHeader.includes('organization')) {
             mapping['company'] = header;
           }
         });
         
         setColumnMapping(mapping);
         
-        // Transform data for preview
-        const transformedContacts = results.data.map((row: any) => ({
-          phone_number: row[mapping.phone_number] || '',
-          first_name: row[mapping.first_name] || '',
-          last_name: row[mapping.last_name] || '',
-          email: row[mapping.email] || '',
-          company: row[mapping.company] || '',
-        })).filter(contact => contact.phone_number);
+        // Transform and normalize data for preview
+        const transformedContacts = results.data.map((row: any) => {
+          const phoneNumber = row[mapping.phone_number] || '';
+          const normalizedPhone = phoneNumber ? normalizePhoneNumber(phoneNumber, selectedCountry) : '';
+          
+          // Collect custom fields
+          const customFields: any = {};
+          headers.forEach(header => {
+            if (!Object.values(mapping).includes(header) && row[header]) {
+              customFields[header] = row[header];
+            }
+          });
+          
+          return {
+            phone_number: normalizedPhone,
+            first_name: row[mapping.first_name] || '',
+            last_name: row[mapping.last_name] || '',
+            email: row[mapping.email] || '',
+            company: row[mapping.company] || '',
+            custom_fields: customFields,
+          };
+        }).filter(contact => contact.phone_number && validateE164PhoneNumber(contact.phone_number));
         
         setContacts(transformedContacts);
         setUploading(false);
         
+        const invalidCount = results.data.length - transformedContacts.length;
         toast({
           title: "File uploaded",
-          description: `Found ${transformedContacts.length} valid contacts`,
+          description: `Found ${transformedContacts.length} valid contacts${invalidCount > 0 ? ` (${invalidCount} invalid phone numbers)` : ''}`,
         });
       },
       error: (error) => {
@@ -241,10 +262,14 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
 
         // Insert contacts
         const contactsToInsert = contacts.map(contact => ({
-          ...contact,
           user_id: user?.id,
           campaign_id: campaign.id,
-          call_status: 'pending'
+          phone_number: contact.phone_number,
+          first_name: contact.first_name || null,
+          last_name: contact.last_name || null,
+          email: contact.email || null,
+          company: contact.company || null,
+          custom_fields: contact.custom_fields || {},
         }));
 
         const { error: contactsError } = await supabase
