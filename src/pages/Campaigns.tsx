@@ -410,10 +410,19 @@ const Campaigns: React.FC = () => {
                             Launch
                           </Button>
                         ) : null}
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
-                        </Button>
+                        <CampaignBuilder 
+                          onCampaignCreated={fetchCampaigns}
+                          editCampaign={{
+                            id: campaign.id,
+                            name: campaign.name,
+                            agent_id: campaign.agent_id
+                          }}
+                        >
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit
+                          </Button>
+                        </CampaignBuilder>
                       </div>
                     </div>
                   </CardContent>

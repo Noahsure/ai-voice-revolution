@@ -28,9 +28,15 @@ interface Agent {
 interface CampaignBuilderProps {
   onCampaignCreated: () => void;
   children: React.ReactNode;
+  editCampaign?: {
+    id: string;
+    name: string;
+    description?: string;
+    agent_id: string;
+  };
 }
 
-const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, children }) => {
+const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, children, editCampaign }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -53,8 +59,14 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
   useEffect(() => {
     if (open) {
       fetchAgents();
+      if (editCampaign) {
+        setCampaignName(editCampaign.name);
+        setCampaignDescription(editCampaign.description || '');
+        setSelectedAgent(editCampaign.agent_id);
+        setStep(editCampaign ? 2 : 1); // Skip to agent selection for editing
+      }
     }
-  }, [open]);
+  }, [open, editCampaign]);
 
   const fetchAgents = async () => {
     try {
@@ -179,10 +191,10 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
   };
 
   const createCampaign = async () => {
-    if (!campaignName.trim() || !selectedAgent || contacts.length === 0) {
+    if (!campaignName.trim() || !selectedAgent || (!editCampaign && contacts.length === 0)) {
       toast({
         title: "Missing information",
-        description: "Please complete all steps before creating the campaign",
+        description: editCampaign ? "Please fill in all required fields" : "Please complete all steps before creating the campaign",
         variant: "destructive",
       });
       return;
@@ -191,39 +203,57 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
     try {
       setLoading(true);
 
-      // Create campaign
-      const { data: campaign, error: campaignError } = await supabase
-        .from('campaigns')
-        .insert({
-          name: campaignName,
-          status: 'draft',
+      if (editCampaign) {
+        // Update existing campaign
+        const { error: campaignError } = await supabase
+          .from('campaigns')
+          .update({
+            name: campaignName,
+            agent_id: selectedAgent,
+          })
+          .eq('id', editCampaign.id);
+
+        if (campaignError) throw campaignError;
+
+        toast({
+          title: "Campaign updated successfully",
+          description: `${campaignName} has been updated`,
+        });
+      } else {
+        // Create new campaign
+        const { data: campaign, error: campaignError } = await supabase
+          .from('campaigns')
+          .insert({
+            name: campaignName,
+            status: 'draft',
+            user_id: user?.id,
+            agent_id: selectedAgent,
+            total_contacts: contacts.length
+          })
+          .select()
+          .single();
+
+        if (campaignError) throw campaignError;
+
+        // Insert contacts
+        const contactsToInsert = contacts.map(contact => ({
+          ...contact,
           user_id: user?.id,
-          agent_id: selectedAgent,
-          total_contacts: contacts.length
-        })
-        .select()
-        .single();
+          campaign_id: campaign.id,
+          call_status: 'pending'
+        }));
 
-      if (campaignError) throw campaignError;
+        const { error: contactsError } = await supabase
+          .from('contacts')
+          .insert(contactsToInsert);
 
-      // Insert contacts
-      const contactsToInsert = contacts.map(contact => ({
-        ...contact,
-        user_id: user?.id,
-        campaign_id: campaign.id,
-        call_status: 'pending'
-      }));
+        if (contactsError) throw contactsError;
 
-      const { error: contactsError } = await supabase
-        .from('contacts')
-        .insert(contactsToInsert);
-
-      if (contactsError) throw contactsError;
-
-      toast({
-        title: "Campaign created successfully",
-        description: `${campaignName} with ${contacts.length} contacts is ready to launch`,
-      });
+        toast({
+          title: "Campaign created successfully",
+          description: `${campaignName} with ${contacts.length} contacts is ready to launch`,
+        });
+      }
 
       // Reset form
       setCampaignName('');
@@ -276,27 +306,29 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Campaign</DialogTitle>
+          <DialogTitle>{editCampaign ? 'Edit Campaign' : 'Create New Campaign'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-8">
-            {[1, 2, 3].map((stepNum) => (
-              <div key={stepNum} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-                  ${step >= stepNum ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                  {stepNum}
+          {!editCampaign && (
+            <div className="flex items-center justify-between mb-8">
+              {[1, 2, 3].map((stepNum) => (
+                <div key={stepNum} className="flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
+                    ${step >= stepNum ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                    {stepNum}
+                  </div>
+                  {stepNum < 3 && (
+                    <div className={`w-24 h-1 mx-4 ${step > stepNum ? 'bg-primary' : 'bg-muted'}`} />
+                  )}
                 </div>
-                {stepNum < 3 && (
-                  <div className={`w-24 h-1 mx-4 ${step > stepNum ? 'bg-primary' : 'bg-muted'}`} />
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Step 1: Campaign Details */}
-          {step === 1 && (
+          {(step === 1 || editCampaign) && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Campaign Details</h3>
               <div className="space-y-4">
@@ -323,7 +355,7 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
           )}
 
           {/* Step 2: Select Agent */}
-          {step === 2 && (
+          {(step === 2 || editCampaign) && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Select AI Agent</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
@@ -372,7 +404,7 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
           )}
 
           {/* Step 3: Upload Contacts */}
-          {step === 3 && (
+          {step === 3 && !editCampaign && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Upload Contacts</h3>
               
@@ -445,25 +477,41 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
 
           {/* Navigation Buttons */}
           <div className="flex justify-between pt-6">
-            <Button
-              variant="outline"
-              onClick={prevStep}
-              disabled={step === 1}
-            >
-              Previous
-            </Button>
-            
-            {step < 3 ? (
-              <Button onClick={nextStep}>
-                Next
-              </Button>
+            {editCampaign ? (
+              <div className="flex gap-2 ml-auto">
+                <Button variant="outline" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={createCampaign}
+                  disabled={loading}
+                >
+                  {loading ? 'Updating...' : 'Update Campaign'}
+                </Button>
+              </div>
             ) : (
-              <Button
-                onClick={createCampaign}
-                disabled={loading || contacts.length === 0}
-              >
-                {loading ? 'Creating...' : 'Create Campaign'}
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={step === 1}
+                >
+                  Previous
+                </Button>
+                
+                {step < 3 ? (
+                  <Button onClick={nextStep}>
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={createCampaign}
+                    disabled={loading || contacts.length === 0}
+                  >
+                    {loading ? 'Creating...' : 'Create Campaign'}
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
