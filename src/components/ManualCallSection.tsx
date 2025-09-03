@@ -162,37 +162,41 @@ export const ManualCallSection = () => {
   };
 
   return (
-    <Card className="border-2 border-accent/20 bg-gradient-to-br from-accent/5 to-accent/10">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Phone className="w-5 h-5 text-accent" />
-          Make Manual Call
+    <Card className="border border-muted bg-card shadow-sm">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3 text-lg font-semibold text-foreground">
+          <div className="p-2 rounded-lg bg-muted/50">
+            <Phone className="w-5 h-5 text-muted-foreground" />
+          </div>
+          Manual Call
         </CardTitle>
-        <CardDescription>
-          Start an instant call with any AI agent to a specific number
+        <CardDescription className="text-muted-foreground leading-relaxed">
+          Initiate an instant call with any AI agent to a specific phone number
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="agent-select">Select AI Agent</Label>
+      <CardContent className="space-y-6">
+        <div className="space-y-3">
+          <Label htmlFor="agent-select" className="text-sm font-medium text-foreground">
+            AI Agent Selection
+          </Label>
           <Select value={selectedAgent} onValueChange={setSelectedAgent} disabled={fetchingAgents}>
-            <SelectTrigger>
-              <SelectValue placeholder={fetchingAgents ? "Loading agents..." : "Choose an agent"} />
+            <SelectTrigger className="h-11 border-muted focus:border-muted-foreground transition-colors">
+              <SelectValue placeholder={fetchingAgents ? "Loading agents..." : "Select an AI agent"} />
             </SelectTrigger>
-            <SelectContent className="max-h-80">
+            <SelectContent className="max-h-80 bg-card border-muted">
               {agents.map((agent) => (
-                <SelectItem key={agent.id} value={agent.id} className="py-3">
+                <SelectItem key={agent.id} value={agent.id} className="py-4 px-3 focus:bg-muted/50">
                   <div className="flex items-start gap-3 w-full">
-                    <div className="p-1 rounded-md bg-accent/20 mt-0.5">
-                      <Bot className="w-4 h-4 text-accent" />
+                    <div className="p-1.5 rounded-md bg-muted/80 border border-muted mt-0.5 shrink-0">
+                      <Bot className="w-4 h-4 text-muted-foreground" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm truncate">{agent.name}</div>
-                      <div className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="font-medium text-sm text-foreground truncate">{agent.name}</div>
+                      <div className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                         {agent.purpose}
                       </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                      <div className="flex items-center gap-1 pt-1">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-muted border border-muted-foreground/20 text-muted-foreground">
                           {agent.type}
                         </span>
                       </div>
@@ -204,8 +208,10 @@ export const ManualCallSection = () => {
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone-input">Phone Number</Label>
+        <div className="space-y-3">
+          <Label htmlFor="phone-input" className="text-sm font-medium text-foreground">
+            Phone Number
+          </Label>
           <Input
             id="phone-input"
             type="tel"
@@ -213,18 +219,18 @@ export const ManualCallSection = () => {
             value={phoneNumber}
             onChange={handlePhoneChange}
             maxLength={20}
-            className="font-mono"
+            className="h-11 font-mono border-muted focus:border-muted-foreground transition-colors"
           />
-          <p className="text-xs text-muted-foreground">
-            Supports UK (+44), US, and international formats
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Supports UK (+44), US, and international phone number formats
           </p>
         </div>
 
         <Button 
           onClick={handleMakeCall}
           disabled={loading || !selectedAgent || !phoneNumber || !validatePhoneNumber(phoneNumber)}
-          className="w-full"
-          variant="hero"
+          className="w-full h-11 bg-foreground text-background hover:bg-foreground/90 transition-colors font-medium"
+          size="lg"
         >
           {loading ? (
             <>
@@ -234,7 +240,7 @@ export const ManualCallSection = () => {
           ) : (
             <>
               <Phone className="w-4 h-4 mr-2" />
-              Make Call Now
+              Initiate Call
             </>
           )}
         </Button>
