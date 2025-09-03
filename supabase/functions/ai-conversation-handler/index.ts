@@ -199,7 +199,7 @@ User just said: "${speechResult}"
         input="speech" 
         timeout="10" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-response-handler?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Pause length="1"/>
@@ -225,7 +225,7 @@ User just said: "${speechResult}"
         input="speech" 
         timeout="8" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-response-handler?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Pause length="1"/>
@@ -255,7 +255,7 @@ User just said: "${speechResult}"
         input="speech" 
         timeout="10" 
         speechTimeout="auto"
-        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-conversation-handler/response?callRecordId=${callRecordId}&agentId=${agentId}"
+        action="https://xmpjqtvznswcdfwtrvpc.supabase.co/functions/v1/ai-response-handler?callRecordId=${callRecordId}&agentId=${agentId}"
         method="POST"
     >
         <Say voice="alice">How can I help you today?</Say>
