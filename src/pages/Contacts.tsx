@@ -40,7 +40,7 @@ const Contacts = () => {
   const { toast } = useToast();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [selectedCampaign, setSelectedCampaign] = useState<string>('');
+  const [selectedCampaign, setSelectedCampaign] = useState<string>('all-campaigns');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -81,7 +81,7 @@ const Contacts = () => {
         .select('*')
         .eq('user_id', user?.id);
 
-      if (selectedCampaign) {
+      if (selectedCampaign && selectedCampaign !== 'all-campaigns') {
         query = query.eq('campaign_id', selectedCampaign);
       }
 
@@ -154,7 +154,7 @@ const Contacts = () => {
   };
 
   const importContacts = async () => {
-    if (!selectedCampaign || csvData.length === 0) return;
+    if (!selectedCampaign || selectedCampaign === 'all-campaigns' || csvData.length === 0) return;
 
     try {
       setUploading(true);
@@ -163,10 +163,10 @@ const Contacts = () => {
         user_id: user?.id,
         campaign_id: selectedCampaign,
         phone_number: row[columnMapping.phone_number] || '',
-        first_name: row[columnMapping.first_name] || null,
-        last_name: row[columnMapping.last_name] || null,
-        email: row[columnMapping.email] || null,
-        company: row[columnMapping.company] || null,
+        first_name: columnMapping.first_name && columnMapping.first_name !== 'none' ? row[columnMapping.first_name] : null,
+        last_name: columnMapping.last_name && columnMapping.last_name !== 'none' ? row[columnMapping.last_name] : null,
+        email: columnMapping.email && columnMapping.email !== 'none' ? row[columnMapping.email] : null,
+        company: columnMapping.company && columnMapping.company !== 'none' ? row[columnMapping.company] : null,
       })).filter(contact => contact.phone_number); // Filter out contacts without phone numbers
 
       const { error } = await supabase
@@ -353,7 +353,7 @@ const Contacts = () => {
                 <SelectValue placeholder="All Campaigns" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Campaigns</SelectItem>
+                <SelectItem value="all-campaigns">All Campaigns</SelectItem>
                 {campaigns.map((campaign) => (
                   <SelectItem key={campaign.id} value={campaign.id}>
                     {campaign.name}
@@ -522,7 +522,7 @@ const Contacts = () => {
                     <SelectValue placeholder="Select column" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
                       <SelectItem key={header} value={header}>{header}</SelectItem>
                     ))}
@@ -539,7 +539,7 @@ const Contacts = () => {
                     <SelectValue placeholder="Select column" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
                       <SelectItem key={header} value={header}>{header}</SelectItem>
                     ))}
@@ -556,7 +556,7 @@ const Contacts = () => {
                     <SelectValue placeholder="Select column" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
                       <SelectItem key={header} value={header}>{header}</SelectItem>
                     ))}
@@ -573,7 +573,7 @@ const Contacts = () => {
                     <SelectValue placeholder="Select column" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {csvPreview.length > 0 && Object.keys(csvPreview[0]).map((header) => (
                       <SelectItem key={header} value={header}>{header}</SelectItem>
                     ))}
