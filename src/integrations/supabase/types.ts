@@ -472,6 +472,8 @@ export type Database = {
           agent_id: string | null
           completed_calls: number | null
           created_at: string | null
+          custom_knowledge_base: string | null
+          custom_script: string | null
           id: string
           name: string
           status: string | null
@@ -484,6 +486,8 @@ export type Database = {
           agent_id?: string | null
           completed_calls?: number | null
           created_at?: string | null
+          custom_knowledge_base?: string | null
+          custom_script?: string | null
           id?: string
           name: string
           status?: string | null
@@ -496,6 +500,8 @@ export type Database = {
           agent_id?: string | null
           completed_calls?: number | null
           created_at?: string | null
+          custom_knowledge_base?: string | null
+          custom_script?: string | null
           id?: string
           name?: string
           status?: string | null

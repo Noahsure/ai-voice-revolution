@@ -191,7 +191,9 @@ const NewCampaign = () => {
           status: 'draft',
           user_id: user?.id,
           agent_id: selectedAgent,
-          total_contacts: contacts.length
+          total_contacts: contacts.length,
+          custom_script: customScript.trim() || null,
+          custom_knowledge_base: customKnowledgeBase.trim() || null
         })
         .select()
         .single();

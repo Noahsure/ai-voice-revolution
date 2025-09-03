@@ -24,11 +24,22 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    // Get agent details
+    // Get agent details with campaign info if available
     const { data: agent } = await supabase
       .from('ai_agents')
       .select('*')
       .eq('id', agentId)
+      .single();
+
+    // Get call record with campaign info if it exists
+    const { data: callRecord } = await supabase
+      .from('call_records')
+      .select(`
+        *,
+        campaigns(name, custom_script, custom_knowledge_base),
+        contacts(first_name, last_name, company, phone_number)
+      `)
+      .eq('id', callRecordId)
       .single();
 
     if (!agent) {
@@ -59,15 +70,9 @@ serve(async (req) => {
     }
 
     // Process customer speech with OpenAI
-    const aiResponse = await processWithOpenAI(speechResult, agent, callRecordId, supabase);
+    const aiResponse = await processWithOpenAI(speechResult, agent, callRecord, supabase);
     
-    // Get call record for user_id
-    const { data: callRecord } = await supabase
-      .from('call_records')
-      .select('user_id')
-      .eq('id', callRecordId)
-      .single();
-
+    // Use existing call record data
     if (!callRecord) {
       return new Response(fallbackTwiML('Call record not found'), {
         headers: corsHeaders
@@ -143,13 +148,13 @@ serve(async (req) => {
   }
 });
 
-async function processWithOpenAI(customerSpeech: string, agent: any, callRecordId: string, supabase: any): Promise<string> {
+async function processWithOpenAI(customerSpeech: string, agent: any, callRecord: any, supabase: any): Promise<string> {
   try {
     // Get conversation history for context
     const { data: conversationHistory } = await supabase
       .from('conversation_logs')
       .select('speaker, message, timestamp')
-      .eq('call_record_id', callRecordId)
+      .eq('call_record_id', callRecord.id)
       .order('timestamp', { ascending: true });
 
     // Build conversation context
@@ -161,7 +166,39 @@ async function processWithOpenAI(customerSpeech: string, agent: any, callRecordI
         ).join('\n');
     }
 
-    const systemPrompt = `${agent.system_prompt || 'You are a helpful AI assistant.'}\n\nPersonality: ${agent.personality || 'professional'}\n\nKnowledge: ${agent.knowledge_base || 'General knowledge'}${conversationContext}`;
+    // Build enhanced system prompt with campaign-specific information
+    let systemPrompt = agent.system_prompt || 'You are a helpful AI assistant.';
+    
+    // Add campaign-specific script if available
+    if (callRecord.campaigns?.custom_script) {
+      systemPrompt += `\n\nCAMPAIGN-SPECIFIC INSTRUCTIONS:\n${callRecord.campaigns.custom_script}`;
+    }
+    
+    // Build knowledge base (agent + campaign)
+    let knowledgeBase = agent.knowledge_base || 'General knowledge';
+    if (callRecord.campaigns?.custom_knowledge_base) {
+      knowledgeBase += `\n\nCAMPAIGN-SPECIFIC KNOWLEDGE:\n${callRecord.campaigns.custom_knowledge_base}`;
+    }
+    
+    // Add contact information
+    const contact = callRecord.contacts;
+    const contactInfo = contact ? `
+CONTACT INFORMATION:
+- Name: ${contact.first_name || 'Unknown'} ${contact.last_name || ''}
+- Company: ${contact.company || 'Not specified'}
+- Phone: ${contact.phone_number}
+` : '';
+    
+    const campaignInfo = callRecord.campaigns ? `
+CAMPAIGN: ${callRecord.campaigns.name}` : '';
+
+    const finalSystemPrompt = `${systemPrompt}
+
+${contactInfo}${campaignInfo}
+AGENT PERSONALITY: ${agent.personality || 'professional'}
+KNOWLEDGE BASE: ${knowledgeBase}${conversationContext}
+
+Remember to be natural, helpful, and stay in character. Use the contact's name when appropriate.`;
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -174,7 +211,7 @@ async function processWithOpenAI(customerSpeech: string, agent: any, callRecordI
         messages: [
           {
             role: 'system',
-            content: systemPrompt
+            content: finalSystemPrompt
           },
           {
             role: 'user',

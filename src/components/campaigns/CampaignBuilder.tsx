@@ -46,6 +46,8 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
   const [campaignName, setCampaignName] = useState('');
   const [campaignDescription, setCampaignDescription] = useState('');
   const [selectedAgent, setSelectedAgent] = useState<string>('');
+  const [customScript, setCustomScript] = useState('');
+  const [customKnowledgeBase, setCustomKnowledgeBase] = useState('');
   
   // Agents and contacts
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -228,7 +230,9 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
             status: 'draft',
             user_id: user?.id,
             agent_id: selectedAgent,
-            total_contacts: contacts.length
+            total_contacts: contacts.length,
+            custom_script: customScript.trim() || null,
+            custom_knowledge_base: customKnowledgeBase.trim() || null
           })
           .select()
           .single();
@@ -349,6 +353,32 @@ const CampaignBuilder: React.FC<CampaignBuilderProps> = ({ onCampaignCreated, ch
                     value={campaignDescription}
                     onChange={(e) => setCampaignDescription(e.target.value)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="script">Custom Script/Instructions (Optional)</Label>
+                  <Textarea
+                    id="script"
+                    placeholder="Enter specific talking points or script for this campaign..."
+                    value={customScript}
+                    onChange={(e) => setCustomScript(e.target.value)}
+                    className="min-h-[100px]"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    This will be combined with your selected agent's base script
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="knowledge">Campaign Knowledge Base (Optional)</Label>
+                  <Textarea
+                    id="knowledge"
+                    placeholder="Enter specific product info, FAQs, or company details for this campaign..."
+                    value={customKnowledgeBase}
+                    onChange={(e) => setCustomKnowledgeBase(e.target.value)}
+                    className="min-h-[100px]"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Additional context that will help the AI answer campaign-specific questions
+                  </p>
                 </div>
               </div>
             </div>
