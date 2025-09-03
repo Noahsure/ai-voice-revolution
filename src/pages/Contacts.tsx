@@ -297,19 +297,35 @@ const Contacts = () => {
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="campaign">Select Campaign</Label>
-                  <Select value={selectedCampaign} onValueChange={setSelectedCampaign}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a campaign" />
+                  <Label htmlFor="campaign">Select Campaign *</Label>
+                  <Select value={selectedCampaign === 'all-campaigns' ? '' : selectedCampaign} onValueChange={setSelectedCampaign}>
+                    <SelectTrigger className={!selectedCampaign || selectedCampaign === 'all-campaigns' ? 'border-destructive' : ''}>
+                      <SelectValue placeholder="Choose a campaign to upload contacts" />
                     </SelectTrigger>
                     <SelectContent>
-                      {campaigns.map((campaign) => (
-                        <SelectItem key={campaign.id} value={campaign.id}>
-                          {campaign.name}
+                      {campaigns.length === 0 ? (
+                        <SelectItem value="no-campaigns" disabled>
+                          No campaigns available - Create one first
                         </SelectItem>
-                      ))}
+                      ) : (
+                        campaigns.map((campaign) => (
+                          <SelectItem key={campaign.id} value={campaign.id}>
+                            {campaign.name}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
+                  {(!selectedCampaign || selectedCampaign === 'all-campaigns') && (
+                    <p className="text-sm text-destructive mt-1">
+                      Please select a campaign to upload contacts
+                    </p>
+                  )}
+                  {campaigns.length === 0 && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      You need to create a campaign first. Go to Campaigns → New Campaign.
+                    </p>
+                  )}
                 </div>
 
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
@@ -324,11 +340,20 @@ const Contacts = () => {
                     onChange={handleFileUpload}
                     className="hidden"
                     id="file-upload"
-                    disabled={uploading || !selectedCampaign}
+                    disabled={uploading || !selectedCampaign || selectedCampaign === 'all-campaigns' || campaigns.length === 0}
                   />
                   <label htmlFor="file-upload">
-                    <Button variant="outline" disabled={uploading || !selectedCampaign} asChild>
-                      <span>{uploading ? 'Processing...' : 'Choose File'}</span>
+                    <Button 
+                      variant="outline" 
+                      disabled={uploading || !selectedCampaign || selectedCampaign === 'all-campaigns' || campaigns.length === 0} 
+                      asChild
+                    >
+                      <span>
+                        {uploading ? 'Processing...' : 
+                         campaigns.length === 0 ? 'Create Campaign First' :
+                         !selectedCampaign || selectedCampaign === 'all-campaigns' ? 'Select Campaign First' :
+                         'Choose File'}
+                      </span>
                     </Button>
                   </label>
                 </div>
