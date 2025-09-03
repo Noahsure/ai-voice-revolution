@@ -118,12 +118,14 @@ export const ManualCallSection = () => {
     setLoading(true);
 
     try {
-      console.log('📞 Creating temporary contact...');
-      // Create a temporary contact for this manual call
+      // Create a temporary contact for this manual call  
+      // Convert phone number to E.164 format for storage
+      const e164Phone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber.replace(/\D/g, '')}`;
+      
       const { data: contact, error: contactError } = await supabase
         .from('contacts')
         .insert({
-          phone_number: phoneNumber.replace(/\D/g, ''),
+          phone_number: e164Phone, // Store in E.164 format
           first_name: 'Manual Call',
           last_name: '',
           user_id: user?.id,
@@ -139,20 +141,24 @@ export const ManualCallSection = () => {
       
       console.log('✅ Contact created:', contact.id);
 
-      // Initiate the call
       console.log('🚀 Calling initiate-outbound-call function...');
       const { data, error } = await supabase.functions.invoke('initiate-outbound-call', {
         body: {
           campaignId: null,
           contactId: contact.id,
           agentId: selectedAgent,
-          phoneNumber: phoneNumber.replace(/\D/g, ''),
-          useSimpleTwiml: false // Re-enable AI conversation handler now that it's fixed
+          phoneNumber: e164Phone, // Use the same E.164 formatted number
+          useSimpleTwiml: false
         }
       });
 
       console.log('📡 Function response:', { data, error });
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Function call failed:', error);
+        throw new Error(error.message || 'Call initiation failed');
+      }
+
+      console.log('✅ Call initiated successfully:', data);
 
       toast({
         title: "Call Initiated",
