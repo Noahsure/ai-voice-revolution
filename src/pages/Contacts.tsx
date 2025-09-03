@@ -333,7 +333,7 @@ const Contacts = () => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="campaign">Select Campaign *</Label>
-                  <Select value={selectedCampaign === 'all-campaigns' ? '' : selectedCampaign} onValueChange={setSelectedCampaign}>
+                  <Select value={selectedCampaign === 'all-campaigns' ? undefined : selectedCampaign} onValueChange={setSelectedCampaign}>
                     <SelectTrigger className={!selectedCampaign || selectedCampaign === 'all-campaigns' ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Choose a campaign to upload contacts" />
                     </SelectTrigger>
