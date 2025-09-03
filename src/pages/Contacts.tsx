@@ -529,11 +529,20 @@ const Contacts = () => {
                               {contact.call_attempts}
                             </span>
                           </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">
-                              <FileText className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
+                           <TableCell className="text-right">
+                             <Button 
+                               variant="ghost" 
+                               size="sm"
+                               onClick={() => {
+                                 const newSelected = new Set([contact.id]);
+                                 setSelectedContacts(newSelected);
+                                 deleteSelectedContacts();
+                               }}
+                               className="text-destructive hover:text-destructive"
+                             >
+                               <Trash2 className="h-4 w-4" />
+                             </Button>
+                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
