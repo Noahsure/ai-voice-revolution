@@ -105,20 +105,15 @@ serve(async (req) => {
     const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtcGpxdHZ6bnN3Y2Rmd3RydnBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3NDE3MjQsImV4cCI6MjA3MjMxNzcyNH0.fkDoqP1b8UusCA0rHzcvi7KmkzoGrbcHjv3loVZRbBo";
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-    // Get authorization header
-    const authHeader = req.headers.get('authorization');
-    if (authHeader) {
-      supabase.auth.setSession({
-        access_token: authHeader.replace('Bearer ', ''),
-        refresh_token: '',
-      });
-    }
+    // Get authorization header and validate user
+    const authHeader = req.headers.get('authorization')?.replace('Bearer ', '');
 
-    // Get user from auth
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    const { data: { user }, error: userError } = await supabase.auth.getUser(authHeader || undefined);
+    if (userError || !user) {
+      console.error('Unauthorized request to initiate-outbound-call', { hasAuthHeader: !!authHeader, userError });
       throw new Error('Unauthorized');
     }
+
 
     const userId = user.id;
 
