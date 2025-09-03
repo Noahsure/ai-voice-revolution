@@ -596,6 +596,44 @@ export type Database = {
           },
         ]
       }
+      conversation_logs: {
+        Row: {
+          call_record_id: string | null
+          created_at: string | null
+          id: string
+          message: string
+          speaker: string | null
+          timestamp: string | null
+          user_id: string
+        }
+        Insert: {
+          call_record_id?: string | null
+          created_at?: string | null
+          id?: string
+          message: string
+          speaker?: string | null
+          timestamp?: string | null
+          user_id: string
+        }
+        Update: {
+          call_record_id?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          speaker?: string | null
+          timestamp?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_logs_call_record_id_fkey"
+            columns: ["call_record_id"]
+            isOneToOne: false
+            referencedRelation: "call_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plan_limits: {
         Row: {
           features: Json | null
