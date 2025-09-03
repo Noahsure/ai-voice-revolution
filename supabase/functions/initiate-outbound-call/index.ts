@@ -12,6 +12,7 @@ interface CallRequest {
   contactId: string;
   agentId: string;
   phoneNumber: string;
+  useSimpleTwiml?: boolean;
 }
 
 const CALL_TIMEOUT_MS = 60000; // 60 seconds max for call initiation
@@ -93,7 +94,7 @@ serve(async (req) => {
   }
 
   try {
-    const { campaignId, contactId, agentId, phoneNumber }: CallRequest = await req.json();
+    const { campaignId, contactId, agentId, phoneNumber, useSimpleTwiml }: CallRequest = await req.json();
 
     // Input validation
     if (!agentId || !phoneNumber) {
@@ -255,7 +256,10 @@ serve(async (req) => {
       }
 
       // Prepare TwiML for AI conversation handling
-      const twimlUrl = `${supabaseUrl}/functions/v1/ai-conversation-handler?callRecordId=${callRecord.id}&agentId=${agentId}`;
+      const twimlUrl = (useSimpleTwiml)
+        ? `${supabaseUrl}/functions/v1/call-twiml`
+        : `${supabaseUrl}/functions/v1/ai-conversation-handler?callRecordId=${callRecord.id}&agentId=${agentId}`;
+      console.log('Using TwiML URL:', twimlUrl);
       const statusCallbackUrl = `${supabaseUrl}/functions/v1/handle-call-webhook`;
 
       // Initiate Twilio call with retry logic
