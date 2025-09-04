@@ -94,6 +94,16 @@ export const ManualCallSection = () => {
   const handleMakeCall = async () => {
     console.log('🔥 handleMakeCall started', { selectedAgent, phoneNumber, user: user?.id });
     
+    if (!user) {
+      console.log('❌ No user authenticated');
+      toast({
+        title: "Authentication Required",
+        description: "Please ensure you're logged in",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!selectedAgent) {
       console.log('❌ No agent selected');
       toast({
