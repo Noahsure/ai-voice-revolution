@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,7 +28,8 @@ import {
   Filter,
   Calendar,
   TestTube,
-  PlayCircle
+  PlayCircle,
+  Volume2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addDays, subDays } from 'date-fns';
@@ -53,6 +55,7 @@ interface Campaign {
 
 const Analytics: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
@@ -296,7 +299,7 @@ const Analytics: React.FC = () => {
           <p className="text-muted-foreground">Comprehensive insights into your AI voice campaign performance</p>
         </div>
         
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           <Button
             onClick={testAllCampaigns}
             disabled={testingAllCampaigns || campaigns.length === 0}
@@ -313,6 +316,14 @@ const Analytics: React.FC = () => {
                 Test All Campaigns
               </>
             )}
+          </Button>
+          
+          <Button
+            onClick={() => navigate('/voice-monitor')}
+            variant="outline"
+          >
+            <Volume2 className="w-4 h-4 mr-2" />
+            Voice Monitor
           </Button>
           
           <DatePickerWithRange

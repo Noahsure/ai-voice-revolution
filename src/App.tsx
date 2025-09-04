@@ -17,6 +17,7 @@ import Contacts from "./pages/Contacts";
 import LiveMonitoring from "./pages/LiveMonitoring";
 import Analytics from "./pages/Analytics";
 import Billing from "./pages/Billing";
+import VoiceMonitor from "./pages/VoiceMonitor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -101,6 +102,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Billing />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/voice-monitor" 
+              element={
+                <ProtectedRoute>
+                  <VoiceMonitor />
                 </ProtectedRoute>
               } 
             />

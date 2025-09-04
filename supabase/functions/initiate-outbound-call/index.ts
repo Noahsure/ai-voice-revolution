@@ -255,7 +255,7 @@ serve(async (req) => {
       const twilioAccountSid = profile.twilio_account_sid;
       const twilioAuthToken = profile.twilio_auth_token;
 
-      // Prepare TwiML for AI conversation handling
+      // Use real-time streaming TwiML for awaz.ai-like experience
       const twimlUrl = (useSimpleTwiml)
         ? `${supabaseUrl}/functions/v1/call-twiml`
         : `${supabaseUrl}/functions/v1/ai-conversation-handler?callRecordId=${callRecord.id}&agentId=${agentId}`;

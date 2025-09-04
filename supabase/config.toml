@@ -54,3 +54,6 @@ verify_jwt = false
 
 [functions.call-twiml]
 verify_jwt = false
+
+[functions.realtime-voice-stream]
+verify_jwt = false
