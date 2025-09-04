@@ -25,7 +25,9 @@ import {
   PieChart,
   Download,
   Filter,
-  Calendar
+  Calendar,
+  TestTube,
+  PlayCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addDays, subDays } from 'date-fns';
@@ -73,6 +75,8 @@ const Analytics: React.FC = () => {
     to: new Date()
   });
   const [activeTab, setActiveTab] = useState('overview');
+  const [testingAllCampaigns, setTestingAllCampaigns] = useState(false);
+  const [testResults, setTestResults] = useState<Array<{campaignId: string, campaignName: string, status: 'running' | 'passed' | 'failed', details?: any}>>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -187,6 +191,86 @@ const Analytics: React.FC = () => {
     return ((estimatedRevenue - analyticsData.totalCostCents) / analyticsData.totalCostCents) * 100;
   };
 
+  const testAllCampaigns = async () => {
+    if (campaigns.length === 0) {
+      toast({
+        title: "No campaigns found",
+        description: "Create some campaigns first to test them",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setTestingAllCampaigns(true);
+    setTestResults([]);
+
+    toast({
+      title: "Testing all campaigns",
+      description: `Starting tests for ${campaigns.length} campaigns...`,
+    });
+
+    for (const campaign of campaigns) {
+      // Set status to running
+      setTestResults(prev => [...prev.filter(r => r.campaignId !== campaign.id), {
+        campaignId: campaign.id,
+        campaignName: campaign.name,
+        status: 'running'
+      }]);
+
+      try {
+        // Test campaign by running a test call
+        const { data: testResult, error } = await supabase.functions.invoke('test-call-components', {
+          body: {
+            test_type: 'campaign_test',
+            campaign_id: campaign.id,
+            phone_number: '+15551234567' // Test number
+          }
+        });
+
+        if (error) throw error;
+
+        // Update result
+        setTestResults(prev => [...prev.filter(r => r.campaignId !== campaign.id), {
+          campaignId: campaign.id,
+          campaignName: campaign.name,
+          status: testResult.success ? 'passed' : 'failed',
+          details: testResult
+        }]);
+
+        toast({
+          title: `Campaign "${campaign.name}" ${testResult.success ? 'passed' : 'failed'}`,
+          description: testResult.message || 'Test completed',
+          variant: testResult.success ? 'default' : 'destructive'
+        });
+
+      } catch (error) {
+        setTestResults(prev => [...prev.filter(r => r.campaignId !== campaign.id), {
+          campaignId: campaign.id,
+          campaignName: campaign.name,
+          status: 'failed',
+          details: { error: error.message }
+        }]);
+
+        toast({
+          title: `Campaign "${campaign.name}" failed`,
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+
+      // Wait 2 seconds between tests
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    setTestingAllCampaigns(false);
+    
+    const passedTests = testResults.filter(r => r.status === 'passed').length;
+    toast({
+      title: "All campaign tests completed",
+      description: `${passedTests}/${campaigns.length} campaigns passed tests`,
+    });
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -213,6 +297,24 @@ const Analytics: React.FC = () => {
         </div>
         
         <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={testAllCampaigns}
+            disabled={testingAllCampaigns || campaigns.length === 0}
+            variant="default"
+          >
+            {testingAllCampaigns ? (
+              <>
+                <TestTube className="w-4 h-4 mr-2 animate-pulse" />
+                Testing...
+              </>
+            ) : (
+              <>
+                <PlayCircle className="w-4 h-4 mr-2" />
+                Test All Campaigns
+              </>
+            )}
+          </Button>
+          
           <DatePickerWithRange
             date={dateRange}
             onDateChange={(range) => {
@@ -323,6 +425,42 @@ const Analytics: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Test Results */}
+      {testResults.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TestTube className="w-5 h-5" />
+              Campaign Test Results
+            </CardTitle>
+            <CardDescription>
+              Results from testing all campaigns
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {testResults.map((result) => (
+                <div key={result.campaignId} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      {result.status === 'running' && <TestTube className="w-4 h-4 text-yellow-600 animate-pulse" />}
+                      {result.status === 'passed' && <div className="w-2 h-2 bg-green-600 rounded-full" />}
+                      {result.status === 'failed' && <div className="w-2 h-2 bg-red-600 rounded-full" />}
+                    </div>
+                    <span className="font-medium">{result.campaignName}</span>
+                  </div>
+                  <Badge 
+                    variant={result.status === 'passed' ? 'default' : result.status === 'failed' ? 'destructive' : 'outline'}
+                  >
+                    {result.status}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Analytics Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
