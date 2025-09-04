@@ -13,6 +13,7 @@ import VoiceTestingPanel from '@/components/VoiceTestingPanel';
 import CallReliabilityMonitor from '@/components/CallReliabilityMonitor';
 import SystemHealthIndicator from '@/components/SystemHealthIndicator';
 import { ManualCallSection } from '@/components/ManualCallSection';
+import BulkCallLauncher from '@/components/BulkCallLauncher';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -260,6 +261,11 @@ const Dashboard = () => {
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Bulk Call Section */}
+        <div className="mt-6">
+          <BulkCallLauncher />
         </div>
 
         {/* Feature Cards */}
