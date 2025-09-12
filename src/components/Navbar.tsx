@@ -27,8 +27,8 @@ export const Navbar = () => {
             <div className="p-2 rounded-xl bg-gradient-hero">
               <Phone className="w-6 h-6 text-white" />
             </div>
-            <div className="font-black text-xl nexavoice-text-gradient">
-              NEXAVOICE
+            <div className="font-black text-xl neurovoice-text-gradient">
+              NEUROVOICE
             </div>
           </div>
 

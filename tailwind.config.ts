@@ -63,32 +63,32 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
-				// NEXAVOICE Premium Brand Colors
-				nexavoice: {
-					primary: 'hsl(var(--nexavoice-primary))',
-					'primary-light': 'hsl(var(--nexavoice-primary-light))',
-					'primary-dark': 'hsl(var(--nexavoice-primary-dark))',
-					secondary: 'hsl(var(--nexavoice-secondary))',
-					accent: 'hsl(var(--nexavoice-accent))'
+				// NEUROVOICE AI Interface Brand Colors
+				neurovoice: {
+					primary: 'hsl(var(--neurovoice-primary))',
+					'primary-light': 'hsl(var(--neurovoice-primary-light))',
+					'primary-dark': 'hsl(var(--neurovoice-primary-dark))',
+					secondary: 'hsl(var(--neurovoice-secondary))',
+					accent: 'hsl(var(--neurovoice-accent))'
 				},
-				platinum: {
-					DEFAULT: 'hsl(var(--platinum))',
-					light: 'hsl(var(--platinum-light))',
-					dark: 'hsl(var(--platinum-dark))'
+				neural: {
+					silver: 'hsl(var(--neural-silver))',
+					'silver-light': 'hsl(var(--neural-silver-light))',
+					'silver-dark': 'hsl(var(--neural-silver-dark))'
 				},
-				luxury: {
-					gold: 'hsl(var(--luxury-gold))',
-					'gold-light': 'hsl(var(--luxury-gold-light))',
-					'gold-dark': 'hsl(var(--luxury-gold-dark))'
+				electric: {
+					blue: 'hsl(var(--electric-blue))',
+					'blue-light': 'hsl(var(--electric-blue-light))',
+					'blue-dark': 'hsl(var(--electric-blue-dark))'
 				},
 			},
 			backgroundImage: {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-premium': 'var(--gradient-premium)',
-				'gradient-luxury': 'var(--gradient-luxury)',
+				'gradient-neural': 'var(--gradient-neural)',
 				'gradient-card': 'var(--gradient-card)', 
 				'gradient-accent': 'var(--gradient-accent)',
-				'gradient-platinum': 'var(--gradient-platinum)',
+				'gradient-ai': 'var(--gradient-ai)',
 			},
 			boxShadow: {
 				'sm': 'var(--shadow-sm)',

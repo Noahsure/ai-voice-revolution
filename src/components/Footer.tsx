@@ -54,10 +54,10 @@ export const Footer = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Ready to <span className="nexavoice-text-gradient">Revolutionize</span> Your Calling?
+              Ready to <span className="neurovoice-text-gradient">Supercharge</span> Your Eleven Labs AI?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of businesses already using NEXAVOICE to transform their call operations.
+              Transform your Eleven Labs conversational AI agents into a powerful calling platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button variant="hero" size="xl" onClick={handleStartTrial}>
@@ -84,26 +84,26 @@ export const Footer = () => {
               <div className="p-2 rounded-xl bg-gradient-hero">
                 <Phone className="w-6 h-6 text-white" />
               </div>
-              <div className="font-black text-xl nexavoice-text-gradient">
-                NEXAVOICE
+              <div className="font-black text-xl neurovoice-text-gradient">
+                NEUROVOICE
               </div>
             </div>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              The world's most advanced AI voice calling platform. Transform your business 
-              with AI agents that never sleep, never take breaks, and convert leads 24/7.
+              The ultimate interface for Eleven Labs conversational AI agents. Make manual and batch calls,
+              handle inbound conversations, all powered by your synchronized Eleven Labs account.
             </p>
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4" />
-                hello@nexavoice.ai
+                hello@neurovoice.ai
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4" />
-                +44 20 7946 0958
+                +1 555-NEURO-AI
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-4 h-4" />
-                London, United Kingdom
+                San Francisco, CA
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ export const Footer = () => {
                 <li key={index}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-nexavoice-primary transition-colors text-sm"
+                    className="text-muted-foreground hover:text-neurovoice-primary transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -132,7 +132,7 @@ export const Footer = () => {
                 <li key={index}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-nexavoice-primary transition-colors text-sm"
+                    className="text-muted-foreground hover:text-neurovoice-primary transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -148,7 +148,7 @@ export const Footer = () => {
                 <li key={index}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-nexavoice-primary transition-colors text-sm"
+                    className="text-muted-foreground hover:text-neurovoice-primary transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -164,7 +164,7 @@ export const Footer = () => {
                 <li key={index}>
                   <a 
                     href={link.href}
-                    className="text-muted-foreground hover:text-nexavoice-primary transition-colors text-sm"
+                    className="text-muted-foreground hover:text-neurovoice-primary transition-colors text-sm"
                   >
                     {link.label}
                   </a>
@@ -180,27 +180,27 @@ export const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 NEXAVOICE. All rights reserved. Built to revolutionize call centers globally.
+              © 2024 NEUROVOICE. All rights reserved. The ultimate Eleven Labs AI interface.
             </p>
             
             <div className="flex items-center gap-4">
               <a 
                 href="#twitter" 
-                className="p-2 rounded-lg bg-surface-muted hover:bg-nexavoice-primary/10 hover:text-nexavoice-primary transition-colors"
+                className="p-2 rounded-lg bg-surface-muted hover:bg-neurovoice-primary/10 hover:text-neurovoice-primary transition-colors"
                 aria-label="Follow on Twitter"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a 
                 href="#linkedin" 
-                className="p-2 rounded-lg bg-surface-muted hover:bg-nexavoice-primary/10 hover:text-nexavoice-primary transition-colors"
+                className="p-2 rounded-lg bg-surface-muted hover:bg-neurovoice-primary/10 hover:text-neurovoice-primary transition-colors"
                 aria-label="Follow on LinkedIn"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
               <a 
                 href="#github" 
-                className="p-2 rounded-lg bg-surface-muted hover:bg-nexavoice-primary/10 hover:text-nexavoice-primary transition-colors"
+                className="p-2 rounded-lg bg-surface-muted hover:bg-neurovoice-primary/10 hover:text-neurovoice-primary transition-colors"
                 aria-label="View on GitHub"
               >
                 <Github className="w-4 h-4" />

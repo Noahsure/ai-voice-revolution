@@ -4,26 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* NEXAVOICE Design System - Revolutionary AI Call Center Platform */
+/* NEUROVOICE Design System - Eleven Labs AI Voice Interface */
 
 @layer base {
   :root {
-    /* Sophisticated Luxury Palette */
-    --nexavoice-primary: 220 20% 15%; /* Deep Charcoal */
-    --nexavoice-primary-light: 220 15% 25%;
-    --nexavoice-primary-dark: 220 25% 8%;
+    /* Sophisticated AI-focused Palette */
+    --neurovoice-primary: 260 65% 45%; /* Deep Neural Purple */
+    --neurovoice-primary-light: 260 60% 55%;
+    --neurovoice-primary-dark: 260 70% 35%;
     
-    --nexavoice-secondary: 220 10% 50%; /* Refined Gray */
-    --nexavoice-accent: 45 25% 60%; /* Muted Gold */
+    --neurovoice-secondary: 260 30% 50%; /* Neural Gray */
+    --neurovoice-accent: 280 55% 60%; /* Electric Violet */
     
-    /* Elegant Neutrals */
-    --platinum: 220 8% 92%; /* Sophisticated Silver */
-    --platinum-light: 220 10% 96%;
-    --platinum-dark: 220 6% 85%;
+    /* AI Interface Neutrals */
+    --neural-silver: 260 15% 90%; /* AI Interface Silver */
+    --neural-silver-light: 260 18% 95%;
+    --neural-silver-dark: 260 12% 82%;
     
-    --luxury-gold: 45 35% 65%; /* Understated Gold */
-    --luxury-gold-light: 45 40% 70%;
-    --luxury-gold-dark: 45 30% 55%;
+    --electric-blue: 220 80% 60%; /* Eleven Labs Blue */
+    --electric-blue-light: 220 85% 70%;
+    --electric-blue-dark: 220 75% 50%;
     
     /* Base System */
     --background: 0 0% 100%;
@@ -64,14 +64,14 @@
     --input: 220 15% 91%;
     --ring: 240 100% 50%;
     
-    /* Refined Luxury Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(220 20% 15%) 0%, hsl(220 15% 25%) 100%);
-    --gradient-premium: linear-gradient(135deg, hsl(220 8% 92%) 0%, hsl(220 6% 85%) 100%);
-    --gradient-luxury: linear-gradient(135deg, hsl(45 35% 65%) 0%, hsl(45 30% 55%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 8% 98%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(45 25% 60%) 0%, hsl(45 20% 50%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(220 8% 98%) 0%, hsl(220 6% 95%) 100%);
-    --gradient-platinum: linear-gradient(135deg, hsl(220 10% 96%) 0%, hsl(220 8% 92%) 100%);
+    /* AI Neural Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(260 65% 45%) 0%, hsl(280 55% 60%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(260 15% 90%) 0%, hsl(260 12% 82%) 100%);
+    --gradient-neural: linear-gradient(135deg, hsl(220 80% 60%) 0%, hsl(220 75% 50%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(260 15% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(280 55% 60%) 0%, hsl(280 50% 50%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(260 15% 98%) 0%, hsl(260 12% 95%) 100%);
+    --gradient-ai: linear-gradient(135deg, hsl(260 18% 95%) 0%, hsl(260 15% 90%) 100%);
     
     /* Sophisticated Shadows */
     --shadow-sm: 0 1px 3px hsl(220 15% 10% / 0.08);
@@ -159,42 +159,42 @@
 }
 
 @layer components {
-  .nexavoice-gradient {
+  .neurovoice-gradient {
     background: var(--gradient-hero);
   }
   
-  .nexavoice-glow {
+  .neurovoice-glow {
     box-shadow: var(--shadow-glow);
   }
   
-  .nexavoice-glass {
+  .neurovoice-glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .nexavoice-animate-float {
+  .neurovoice-animate-float {
     animation: float 6s ease-in-out infinite;
   }
   
-  .nexavoice-animate-pulse-glow {
+  .neurovoice-animate-pulse-glow {
     animation: pulse-glow 3s ease-in-out infinite;
   }
   
-  .nexavoice-elegant-shimmer {
+  .neurovoice-elegant-shimmer {
     background: linear-gradient(90deg, 
-      hsl(220 8% 92% / 0.2) 0%, 
-      hsl(45 35% 65% / 0.4) 50%, 
-      hsl(220 8% 92% / 0.2) 100%);
+      hsl(260 15% 90% / 0.2) 0%, 
+      hsl(280 55% 60% / 0.4) 50%, 
+      hsl(260 15% 90% / 0.2) 100%);
     background-size: 200% 100%;
     animation: elegant-shimmer 4s ease-in-out infinite;
   }
   
-  .nexavoice-refined-float {
+  .neurovoice-refined-float {
     animation: refined-float 6s ease-in-out infinite;
   }
   
-  .nexavoice-text-gradient {
+  .neurovoice-text-gradient {
     background: var(--gradient-hero);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
