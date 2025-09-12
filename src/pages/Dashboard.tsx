@@ -14,6 +14,8 @@ import CallReliabilityMonitor from '@/components/CallReliabilityMonitor';
 import SystemHealthIndicator from '@/components/SystemHealthIndicator';
 import { ManualCallSection } from '@/components/ManualCallSection';
 import BulkCallLauncher from '@/components/BulkCallLauncher';
+import { CallRecordingsPanel } from '@/components/CallRecordingsPanel';
+import { SimpleCallInterface } from '@/components/SimpleCallInterface';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -34,8 +36,11 @@ const Dashboard = () => {
       <header className="border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Phone className="w-8 h-8 text-nexavoice-primary" />
-            <span className="text-2xl font-black nexavoice-text-gradient">NEXAVOICE</span>
+            <img 
+              src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
+              alt="Neurovoice AI Call Centre Solution" 
+              className="h-8 w-auto"
+            />
           </div>
           <div className="flex items-center gap-4">
             <Button 
@@ -62,9 +67,9 @@ const Dashboard = () => {
 
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">AI Voice Calling Dashboard</h1>
+          <h1 className="text-4xl font-bold mb-2">Neurovoice AI Dashboard</h1>
           <p className="text-muted-foreground text-lg">
-            Launch your first campaign in under 3 minutes
+            The ultimate interface for Eleven Labs conversational AI agents
           </p>
           {subscription && (
             <div className="flex items-center gap-2 mt-2">
@@ -171,16 +176,16 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bot className="w-5 h-5 text-primary" />
-                Choose AI Agent
+                Connect Eleven Labs
                 <div className="ml-auto">
                   <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800">
                     <Zap className="w-3 h-3" />
-                    Popular
+                    Essential
                   </span>
                 </div>
               </CardTitle>
               <CardDescription>
-                Select from 50+ pre-built AI agents or create your own
+                Sync your Eleven Labs account to access your conversational AI agents
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -189,7 +194,7 @@ const Dashboard = () => {
                 className="w-full"
                 onClick={() => navigate('/agents')}
               >
-                Browse AI Agents
+                Connect Eleven Labs
               </Button>
             </CardContent>
           </Card>
@@ -198,10 +203,10 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Plus className="w-5 h-5" />
-                Create Your First Campaign
+                Manual & Batch Calls
               </CardTitle>
               <CardDescription>
-                Upload contacts, select an AI agent, and launch in minutes
+                Make individual calls or upload CSV files for batch campaigns
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -210,7 +215,7 @@ const Dashboard = () => {
                 className="w-full"
                 onClick={() => navigate('/campaigns')}
               >
-                Start New Campaign
+                Start Calling
               </Button>
             </CardContent>
           </Card>
@@ -224,20 +229,29 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5" />
-                Setup Twilio Integration
+                Account Sync Status
               </CardTitle>
               <CardDescription>
-                Connect your Twilio account to start making calls
+                Your Eleven Labs integration and connectivity status
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate('/twilio-setup')}
-              >
-                Connect Twilio
-              </Button>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm font-medium">Eleven Labs</span>
+                  </div>
+                  <Badge variant="outline" className="text-green-700 border-green-300">Connected</Badge>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate('/twilio-setup')}
+                >
+                  Manage Connection
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -261,6 +275,16 @@ const Dashboard = () => {
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Simple Call Interface - Maximum Results */}
+        <div className="mt-8">
+          <SimpleCallInterface />
+        </div>
+
+        {/* Call Recordings - Easy Access */}
+        <div className="mt-8">
+          <CallRecordingsPanel />
         </div>
 
         {/* Bulk Call Section */}

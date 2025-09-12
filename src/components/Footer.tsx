@@ -80,13 +80,12 @@ export const Footer = () => {
         <div className="grid lg:grid-cols-6 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-gradient-hero">
-                <Phone className="w-6 h-6 text-white" />
-              </div>
-              <div className="font-black text-xl neurovoice-text-gradient">
-                NEUROVOICE
-              </div>
+            <div className="mb-6">
+              <img 
+                src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
+                alt="Neurovoice AI Call Centre Solution" 
+                className="h-16 w-auto"
+              />
             </div>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               The ultimate interface for Eleven Labs conversational AI agents. Make manual and batch calls,

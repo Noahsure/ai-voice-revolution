@@ -41,14 +41,19 @@ export const Hero = () => {
             Powered by Eleven Labs Conversational AI
           </div>
           
-          {/* Brand Typography */}
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
-            <span className="text-neurovoice-primary">NEUROVOICE</span>
-            <br />
-            <span className="text-foreground font-light">ELEVEN LABS</span>
-            <br />
-            <span className="text-muted-foreground text-4xl md:text-5xl font-extralight tracking-wide">INTERFACE</span>
-          </h1>
+          {/* Brand Logo & Typography */}
+          <div className="flex flex-col items-center mb-8">
+            <img 
+              src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
+              alt="Neurovoice AI Call Centre Solution" 
+              className="h-32 md:h-40 w-auto mb-6"
+            />
+            <h1 className="text-3xl md:text-5xl font-light text-center leading-tight tracking-tight">
+              <span className="text-foreground">The Ultimate</span>
+              <br />
+              <span className="text-neurovoice-primary font-medium">Eleven Labs AI Interface</span>
+            </h1>
+          </div>
           
           {/* Positioning Statement */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-light">
