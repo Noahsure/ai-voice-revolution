@@ -24,11 +24,14 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <img 
-              src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
-              alt="Neurovoice AI Call Centre Solution" 
-              className="h-8 w-auto"
-            />
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
+                alt="Neurovoice AI Call Centre Solution" 
+                className="h-10 w-auto filter drop-shadow-lg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-neurovoice-primary/20 to-electric-blue/20 rounded-lg blur-xl -z-10"></div>
+            </div>
           </div>
 
           {/* Desktop Navigation */}

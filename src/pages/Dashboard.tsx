@@ -35,12 +35,13 @@ const Dashboard = () => {
       {/* Header */}
       <header className="border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="relative">
             <img 
               src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
               alt="Neurovoice AI Call Centre Solution" 
-              className="h-8 w-auto"
+              className="h-12 w-auto filter drop-shadow-lg"
             />
+            <div className="absolute inset-0 bg-gradient-to-r from-neurovoice-primary/30 to-electric-blue/30 rounded-lg blur-xl -z-10 scale-125"></div>
           </div>
           <div className="flex items-center gap-4">
             <Button 
@@ -69,7 +70,7 @@ const Dashboard = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Neurovoice AI Dashboard</h1>
           <p className="text-muted-foreground text-lg">
-            The ultimate interface for Eleven Labs conversational AI agents
+            The ultimate AI call centre solution for maximum results
           </p>
           {subscription && (
             <div className="flex items-center gap-2 mt-2">

@@ -4,50 +4,50 @@ export const Features = () => {
   const features = [
     {
       icon: Bot,
-      title: "Your Eleven Labs Agents",
-      description: "Access all your custom Eleven Labs conversational AI agents directly through our interface. Complete synchronization with your account.",
+      title: "Smart AI Agents",
+      description: "Advanced conversational AI agents that understand context, handle objections, and deliver natural human-like interactions.",
       color: "text-neurovoice-primary"
     },
     {
       icon: Phone,
-      title: "Manual & Batch Calling",
-      description: "Make individual calls or upload CSV files for batch campaigns. Your Eleven Labs agents handle all conversations naturally.",
+      title: "Manual & Batch Operations",
+      description: "Make individual calls or upload CSV files for large-scale campaigns. Complete flexibility for any calling strategy.",
       color: "text-neurovoice-secondary"
     },
     {
       icon: BarChart3,
-      title: "Real-Time Call Monitoring",
-      description: "Monitor live conversations, track call outcomes, and analyze performance with detailed analytics dashboard.",
+      title: "Real-Time Intelligence",
+      description: "Monitor live conversations, track performance metrics, and get AI-powered insights for continuous optimization.",
       color: "text-neurovoice-accent"
     },
     {
       icon: Globe,
-      title: "29+ Languages Support",
-      description: "Leverage Eleven Labs' multilingual capabilities to reach global audiences with natural, human-like conversations.",
+      title: "Global Reach",
+      description: "Support for 29+ languages with natural, native-level conversations that connect with customers worldwide.",
       color: "text-neurovoice-primary"
     },
     {
       icon: Zap,
-      title: "One-Click Sync",
-      description: "Simply connect your Eleven Labs account and all your agents, voices, and settings sync automatically.",
+      title: "Instant Deployment",
+      description: "Go from setup to first call in minutes. No complex integrations or technical expertise required.",
       color: "text-neurovoice-secondary"
     },
     {
       icon: Users,
-      title: "Inbound & Outbound",
-      description: "Handle both inbound customer calls and outbound sales campaigns with the same powerful AI agents.",
+      title: "Complete Call Management",
+      description: "Handle inbound customer service and outbound sales with the same powerful AI infrastructure.",
       color: "text-neurovoice-accent"
     },
     {
       icon: Clock,
-      title: "Always-On Availability",
-      description: "Your Eleven Labs agents are available 24/7, providing consistent, high-quality conversations at any time.",
+      title: "24/7 Operations",
+      description: "Your AI agents never sleep, ensuring consistent availability and service quality around the clock.",
       color: "text-neurovoice-primary"
     },
     {
       icon: Shield,
-      title: "Eleven Labs Security",
-      description: "Built on Eleven Labs' secure infrastructure with enterprise-grade security and compliance features.", 
+      title: "Enterprise Security",
+      description: "Built with enterprise-grade security, compliance features, and reliable infrastructure you can trust.", 
       color: "text-neurovoice-secondary"
     }
   ];
@@ -58,16 +58,16 @@ export const Features = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-3 bg-electric-blue/5 backdrop-blur-xl px-6 py-3 rounded-full text-electric-blue-dark text-sm font-medium mb-8 border border-electric-blue/10">
             <Sparkles className="w-4 h-4" />
-            Eleven Labs Integration
+            Advanced AI Technology
           </div>
           <h2 className="text-4xl md:text-6xl font-light mb-8 tracking-tight">
-            The Ultimate Interface for
+            The Ultimate AI
             <br />
-            <span className="text-neurovoice-primary font-medium">Eleven Labs AI</span>
+            <span className="text-neurovoice-primary font-medium">Call Centre Solution</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
-            Seamlessly connect your Eleven Labs account and transform your conversational AI agents 
-            into a powerful calling platform for manual and batch operations.
+            Combining simplicity with the most advanced AI technology to deliver 
+            ultra maximum results for your business communications.
           </p>
         </div>
 
@@ -101,8 +101,8 @@ export const Features = () => {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-neurovoice-primary text-white text-lg font-medium mb-6 group-hover:scale-105 transition-transform duration-200">
                 1
               </div>
-              <h4 className="text-lg font-semibold mb-3">Connect Eleven Labs</h4>
-              <p className="text-muted-foreground text-sm font-light leading-relaxed">Sync your Eleven Labs account and import all your conversational AI agents automatically.</p>
+              <h4 className="text-lg font-semibold mb-3">Setup AI Agents</h4>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Configure your advanced AI agents with custom personalities and conversation flows.</p>
             </div>
             
             <div className="text-center group">
@@ -110,15 +110,15 @@ export const Features = () => {
                 2
               </div>
               <h4 className="text-lg font-semibold mb-3">Upload Contacts</h4>
-              <p className="text-muted-foreground text-sm font-light leading-relaxed">Upload your contact list or make manual calls using your synchronized AI agents.</p>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Import your contact database or make manual calls using the smart AI interface.</p>
             </div>
             
             <div className="text-center group">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-neurovoice-primary text-white text-lg font-medium mb-6 group-hover:scale-105 transition-transform duration-200">
                 3
               </div>
-              <h4 className="text-lg font-semibold mb-3">Start Calling</h4>
-              <p className="text-muted-foreground text-sm font-light leading-relaxed">Launch campaigns and monitor real-time conversations powered by Eleven Labs AI.</p>
+              <h4 className="text-lg font-semibold mb-3">Achieve Maximum Results</h4>
+              <p className="text-muted-foreground text-sm font-light leading-relaxed">Launch campaigns and watch advanced AI technology deliver ultra maximum results.</p>
             </div>
           </div>
         </div>

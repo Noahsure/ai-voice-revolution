@@ -54,10 +54,10 @@ export const Footer = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Ready to <span className="neurovoice-text-gradient">Supercharge</span> Your Eleven Labs AI?
+              Ready to <span className="neurovoice-text-gradient">Transform</span> Your Call Centre?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Transform your Eleven Labs conversational AI agents into a powerful calling platform.
+              Experience the power of advanced AI technology delivering ultra maximum results.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button variant="hero" size="xl" onClick={handleStartTrial}>
@@ -80,16 +80,17 @@ export const Footer = () => {
         <div className="grid lg:grid-cols-6 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <div className="mb-6">
+            <div className="relative mb-6">
               <img 
                 src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
                 alt="Neurovoice AI Call Centre Solution" 
-                className="h-16 w-auto"
+                className="h-20 w-auto filter drop-shadow-xl"
               />
+              <div className="absolute inset-0 bg-gradient-to-r from-neurovoice-primary/20 to-electric-blue/20 rounded-xl blur-2xl -z-10 scale-110"></div>
             </div>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              The ultimate interface for Eleven Labs conversational AI agents. Make manual and batch calls,
-              handle inbound conversations, all powered by your synchronized Eleven Labs account.
+              The ultimate AI call centre solution combining simplicity with the most advanced technology 
+              to deliver ultra maximum results for your business communications.
             </p>
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-3">
@@ -179,7 +180,7 @@ export const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 NEUROVOICE. All rights reserved. The ultimate Eleven Labs AI interface.
+              © 2024 NEUROVOICE. All rights reserved. The ultimate AI call centre solution.
             </p>
             
             <div className="flex items-center gap-4">

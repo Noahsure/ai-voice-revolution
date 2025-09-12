@@ -38,46 +38,50 @@ export const Hero = () => {
           {/* AI Interface Badge */}
           <div className="inline-flex items-center gap-3 bg-neurovoice-primary/5 backdrop-blur-xl px-8 py-3 rounded-full text-neurovoice-primary text-sm font-medium mb-12 border border-neurovoice-primary/10 shadow-sm">
             <Zap className="w-4 h-4" />
-            Powered by Eleven Labs Conversational AI
+            The Ultimate AI Call Centre Solution
           </div>
           
-          {/* Brand Logo & Typography */}
+          {/* Enhanced Brand Logo & Typography */}
           <div className="flex flex-col items-center mb-8">
-            <img 
-              src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
-              alt="Neurovoice AI Call Centre Solution" 
-              className="h-32 md:h-40 w-auto mb-6"
-            />
+            <div className="relative mb-8">
+              <img 
+                src="/lovable-uploads/4d7f763e-232f-404b-a2dc-ef8766001c08.png" 
+                alt="Neurovoice AI Call Centre Solution" 
+                className="h-40 md:h-48 w-auto filter drop-shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-neurovoice-primary/30 to-electric-blue/30 rounded-2xl blur-3xl -z-10 scale-110"></div>
+              <div className="absolute -inset-4 bg-gradient-to-r from-neurovoice-primary/10 to-electric-blue/10 rounded-3xl blur-2xl -z-20 animate-pulse"></div>
+            </div>
             <h1 className="text-3xl md:text-5xl font-light text-center leading-tight tracking-tight">
-              <span className="text-foreground">The Ultimate</span>
+              <span className="text-foreground">Advanced AI Technology</span>
               <br />
-              <span className="text-neurovoice-primary font-medium">Eleven Labs AI Interface</span>
+              <span className="text-neurovoice-primary font-medium">Maximum Results</span>
             </h1>
           </div>
           
-          {/* Positioning Statement */}
+          {/* Value Proposition */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-light">
-            The ultimate interface for Eleven Labs conversational AI agents. Make manual and batch outbound calls, handle inbound calls seamlessly.
-            <span className="text-foreground font-medium block mt-2">Sync your Eleven Labs account and start calling in minutes.</span>
+            Replace your entire call centre with AI agents that deliver unprecedented performance and reliability.
+            <span className="text-foreground font-medium block mt-2">Simplicity meets the most advanced technology for ultra maximum results.</span>
           </p>
           
-          {/* Eleven Labs Integration Stats */}
+          {/* AI Technology Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">1-Click</div>
-              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Sync Setup</div>
+              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">Ultra</div>
+              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Performance</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">Unlimited</div>
+              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">24/7</div>
+              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Availability</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">Smart</div>
               <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">AI Agents</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">29+</div>
-              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Languages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">Real-time</div>
-              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Streaming</div>
+              <div className="text-4xl md:text-5xl font-light text-neurovoice-primary mb-2">Maximum</div>
+              <div className="text-muted-foreground text-sm font-medium uppercase tracking-wide">Results</div>
             </div>
           </div>
           
@@ -98,7 +102,7 @@ export const Hero = () => {
             No Credit Card Required  •  Full Premium Access  •  Cancel Anytime
           </p>
           
-          {/* Eleven Labs Features */}
+          {/* Core Features */}
           <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-neurovoice-accent" />
@@ -106,11 +110,11 @@ export const Hero = () => {
             </div>
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-neurovoice-accent" />
-              <span className="font-medium">Your ElevenLabs Agents</span>
+              <span className="font-medium">Smart AI Agents</span>
             </div>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-neurovoice-accent" />
-              <span className="font-medium">Complete Sync</span>
+              <span className="font-medium">Advanced Analytics</span>
             </div>
           </div>
         </div>
