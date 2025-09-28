@@ -172,7 +172,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
     
     // Add summary section
     if (options.includeSummary) {
-      csvContent += 'NEXAVOICE Analytics Report\n';
+      csvContent += 'NEUROVOICE Analytics Report\n';
       csvContent += `Report Period: ${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}\n`;
       csvContent += `Generated: ${new Date().toLocaleString()}\n\n`;
     }
@@ -210,7 +210,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `nexavoice-analytics-${dateRange.from.toISOString().split('T')[0]}-${dateRange.to.toISOString().split('T')[0]}.csv`;
+    link.download = `neurovoice-analytics-${dateRange.from.toISOString().split('T')[0]}-${dateRange.to.toISOString().split('T')[0]}.csv`;
     link.click();
   };
 
@@ -220,7 +220,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
       <!DOCTYPE html>
       <html>
       <head>
-        <title>NEXAVOICE Analytics Report</title>
+        <title>NEUROVOICE Analytics Report</title>
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           h1, h2 { color: #333; }
@@ -231,7 +231,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
         </style>
       </head>
       <body>
-        <h1>NEXAVOICE Analytics Report</h1>
+        <h1>NEUROVOICE Analytics Report</h1>
         <div class="summary">
           <p><strong>Report Period:</strong> ${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}</p>
           <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
@@ -278,7 +278,7 @@ export const ExportReports: React.FC<ExportReportsProps> = ({
     const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `nexavoice-analytics-${dateRange.from.toISOString().split('T')[0]}.json`;
+    link.download = `neurovoice-analytics-${dateRange.from.toISOString().split('T')[0]}.json`;
     link.click();
   };
 

@@ -9,7 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import TwilioSetup from "./pages/TwilioSetup";
+import IntegrationSetup from "./pages/IntegrationSetup";
 import Campaigns from "./pages/Campaigns";
 import NewCampaign from "./pages/NewCampaign";
 import Agents from "./pages/Agents";
@@ -42,10 +42,10 @@ const App = () => (
               } 
             />
             <Route 
-              path="/twilio-setup" 
+              path="/integration-setup" 
               element={
                 <ProtectedRoute>
-                  <TwilioSetup />
+                  <IntegrationSetup />
                 </ProtectedRoute>
               } 
             />

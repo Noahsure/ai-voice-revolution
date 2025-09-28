@@ -205,7 +205,7 @@ const StreamlinedOnboarding = () => {
     <div className="max-w-md mx-auto">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome to NexaVoice</CardTitle>
+          <CardTitle className="text-2xl">Welcome to NeuroVoice</CardTitle>
           <p className="text-muted-foreground">
             Launch AI sales campaigns in under 3 minutes
           </p>

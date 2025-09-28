@@ -43,7 +43,7 @@ export const TrialBanner = () => {
               <div>
                 <h3 className="font-semibold text-nexavoice-accent">Trial Ending Soon</h3>
                 <p className="text-sm text-gray-300">
-                  Your trial ends in {subscription.days_left} days. Subscribe to keep your data and continue using NEXAVOICE.
+                  Your trial ends in {subscription.days_left} days. Subscribe to keep your data and continue using NEUROVOICE.
                 </p>
               </div>
             </div>

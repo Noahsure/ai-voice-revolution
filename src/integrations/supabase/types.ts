@@ -677,8 +677,10 @@ export type Database = {
         Row: {
           company_name: string | null
           created_at: string
+          elevenlabs_api_key: string | null
           full_name: string | null
           id: string
+          openai_api_key: string | null
           phone_number: string | null
           plan_type: string | null
           subscription_status: string | null
@@ -691,8 +693,10 @@ export type Database = {
         Insert: {
           company_name?: string | null
           created_at?: string
+          elevenlabs_api_key?: string | null
           full_name?: string | null
           id?: string
+          openai_api_key?: string | null
           phone_number?: string | null
           plan_type?: string | null
           subscription_status?: string | null
@@ -705,8 +709,10 @@ export type Database = {
         Update: {
           company_name?: string | null
           created_at?: string
+          elevenlabs_api_key?: string | null
           full_name?: string | null
           id?: string
+          openai_api_key?: string | null
           phone_number?: string | null
           plan_type?: string | null
           subscription_status?: string | null

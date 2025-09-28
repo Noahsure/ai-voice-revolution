@@ -81,10 +81,10 @@ export const AuthForm = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Phone className="w-8 h-8 text-nexavoice-primary" />
-            <span className="text-2xl font-black nexavoice-text-gradient">NEXAVOICE</span>
+            <Phone className="w-8 h-8 text-primary" />
+            <span className="text-2xl font-black text-primary">NEUROVOICE</span>
           </div>
-          <CardTitle>Welcome to NEXAVOICE</CardTitle>
+          <CardTitle>Welcome to NEUROVOICE</CardTitle>
           <CardDescription>
             Start your free 7-day trial today
           </CardDescription>

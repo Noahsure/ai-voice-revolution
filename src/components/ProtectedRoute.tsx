@@ -21,12 +21,12 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     if (loading || !user) return;
     const currentPath = window.location.pathname;
-    if (currentPath === '/twilio-setup') return;
+    if (currentPath === '/integration-setup') return;
 
     (async () => {
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('twilio_account_sid, twilio_auth_token, phone_number')
+        .select('twilio_account_sid, twilio_auth_token, phone_number, openai_api_key')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -35,9 +35,9 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return;
       }
 
-      const missing = !profile || !profile.twilio_account_sid || !profile.twilio_auth_token || !profile.phone_number;
+      const missing = !profile || !profile.twilio_account_sid || !profile.twilio_auth_token || !profile.phone_number || !profile.openai_api_key;
       if (missing) {
-        navigate('/twilio-setup');
+        navigate('/integration-setup');
       }
     })();
   }, [user, loading, navigate]);
@@ -45,7 +45,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-nexavoice-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }

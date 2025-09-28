@@ -97,7 +97,7 @@ const Billing = () => {
             Subscription & Billing
           </h1>
           <p className="text-xl text-gray-300">
-            Manage your NEXAVOICE subscription and monitor your usage
+            Manage your NEUROVOICE subscription and monitor your usage
           </p>
         </div>
 
@@ -110,7 +110,7 @@ const Billing = () => {
                 <div>
                   <h3 className="font-semibold text-red-400">Trial Expired</h3>
                   <p className="text-sm text-gray-300">
-                    Your 7-day trial has expired. Subscribe to a paid plan to regain access to your account and continue using NEXAVOICE.
+                    Your 7-day trial has expired. Subscribe to a paid plan to regain access to your account and continue using NEUROVOICE.
                   </p>
                 </div>
               </div>
